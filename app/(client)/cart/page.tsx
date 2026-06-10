@@ -31,6 +31,7 @@ import { ShoppingBag, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useShopMode } from "@/hooks/useShopMode";
 import toast from "react-hot-toast";
 
 const CartPage = () => {
@@ -45,6 +46,7 @@ const CartPage = () => {
   const groupedItems = useStore((state) => state.getGroupedItems());
   const { isSignedIn } = useAuth();
   const { user } = useUser();
+  const { catalogueMode } = useShopMode();
   const [addresses, setAddresses] = useState<Address[] | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
@@ -99,6 +101,29 @@ const CartPage = () => {
       setLoading(false);
     }
   };
+  if (catalogueMode) {
+    return (
+      <div className="bg-gray-50 pb-52 md:pb-10">
+        <Container>
+          <div className="mx-auto max-w-3xl rounded-3xl border border-shop_orange/20 bg-white p-10 text-center shadow-sm">
+            <h1 className="text-3xl font-bold text-shop_dark_green">
+              Catalogue Mode Enabled
+            </h1>
+            <p className="mt-4 text-sm text-slate-600">
+              Cart and checkout functionality are currently disabled. Browse product details and contact us for purchase information.
+            </p>
+            <Link
+              href="/shop"
+              className="mt-8 inline-flex rounded-full bg-shop_orange px-6 py-3 text-sm font-semibold text-white transition hover:bg-shop_orange/90"
+            >
+              Browse Catalogue
+            </Link>
+          </div>
+        </Container>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gray-50 pb-52 md:pb-10">
       {isSignedIn ? (

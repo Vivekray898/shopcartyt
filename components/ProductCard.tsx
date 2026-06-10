@@ -8,7 +8,7 @@ import { Flame } from "lucide-react";
 import PriceView from "./PriceView";
 import Title from "./Title";
 import ProductSideMenu from "./ProductSideMenu";
-import AddToCartButton from "./AddToCartButton";
+import ProductCardAction from "./ProductCardAction";
 
 const ProductCard = ({ product }: { product: Product }) => {
   return (
@@ -81,7 +81,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           discount={product?.discount}
           className="text-sm"
         />
-        <AddToCartButton product={product} className="w-36 rounded-full" />
+        <ProductCardAction product={product} />
       </div>
     </div>
   );

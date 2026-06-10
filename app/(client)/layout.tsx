@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ShopModeProvider } from "@/hooks/useShopMode";
+import { getSiteSettings } from "@/sanity/queries";
 
 export const metadata: Metadata = {
   title: {
@@ -11,18 +13,23 @@ export const metadata: Metadata = {
   description: "Shopcart online store, Your one stop shop for all your needs",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteSettings = await getSiteSettings();
+  const catalogueMode = siteSettings?.catalogueMode ?? false;
+
   return (
     <ClerkProvider>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-      </div>
+      <ShopModeProvider catalogueMode={catalogueMode}>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
+      </ShopModeProvider>
     </ClerkProvider>
   );
 }

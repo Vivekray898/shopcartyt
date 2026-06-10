@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { ShoppingBag } from "lucide-react";
 import useStore from "@/store";
+import { useShopMode } from "@/hooks/useShopMode";
 import toast from "react-hot-toast";
 import PriceFormatter from "./PriceFormatter";
 import QuantityButtons from "./QuantityButtons";
@@ -14,9 +15,14 @@ interface Props {
 }
 
 const AddToCartButton = ({ product, className }: Props) => {
+  const { catalogueMode } = useShopMode();
   const { addItem, getItemCount } = useStore();
   const itemCount = getItemCount(product?._id);
   const isOutOfStock = product?.stock === 0;
+
+  if (catalogueMode) {
+    return null;
+  }
 
   const handleAddToCart = () => {
     if ((product?.stock as number) > itemCount) {

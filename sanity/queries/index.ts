@@ -10,6 +10,7 @@ import {
   OTHERS_BLOG_QUERY,
   PRODUCT_BY_SLUG_QUERY,
   SINGLE_BLOG_QUERY,
+  SITE_SETTINGS_QUERY,
 } from "./query";
 
 const getCategories = async (quantity?: number) => {
@@ -90,6 +91,17 @@ const getBrand = async (slug: string) => {
     return null;
   }
 };
+
+const getSiteSettings = async () => {
+  try {
+    const { data } = await sanityFetch({ query: SITE_SETTINGS_QUERY });
+    return data ?? null;
+  } catch (error) {
+    console.error("Error fetching site settings:", error);
+    return null;
+  }
+};
+
 const getMyOrders = async (userId: string) => {
   try {
     const orders = await sanityFetch({
@@ -163,4 +175,5 @@ export {
   getSingleBlog,
   getBlogCategories,
   getOthersBlog,
+  getSiteSettings,
 };

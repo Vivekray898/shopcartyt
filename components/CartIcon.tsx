@@ -3,9 +3,16 @@ import useStore from "@/store";
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import { useShopMode } from "@/hooks/useShopMode";
 
 const CartIcon = () => {
   const { items } = useStore();
+  const { catalogueMode } = useShopMode();
+
+  if (catalogueMode) {
+    return null;
+  }
+
   return (
     <Link href={"/cart"} className="group relative">
       <ShoppingBag className="w-5 h-5 hover:text-shop_light_green hoverEffect" />

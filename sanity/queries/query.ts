@@ -25,6 +25,12 @@ const BRAND_QUERY = defineQuery(`*[_type == "product" && slug.current == $slug]{
   "brandName": brand->title
   }`);
 
+const SITE_SETTINGS_QUERY = defineQuery(
+  `*[_type == "siteSettings"][0]{
+    catalogueMode
+  }`
+);
+
 const MY_ORDERS_QUERY =
   defineQuery(`*[_type == 'order' && clerkUserId == $userId] | order(orderData desc){
 ...,products[]{
@@ -92,4 +98,5 @@ export {
   SINGLE_BLOG_QUERY,
   BLOG_CATEGORIES,
   OTHERS_BLOG_QUERY,
+  SITE_SETTINGS_QUERY,
 };
