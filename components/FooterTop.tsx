@@ -1,52 +1,80 @@
+"use client";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import React from "react";
 
-interface ContactItemData {
-  title: string;
-  subtitle: string;
-  icon: React.ReactNode;
-}
+type FooterContactItem = {
+  title?: string;
+  subtitle?: string;
+  icon?: string;
+};
 
-const data: ContactItemData[] = [
+const defaultData: FooterContactItem[] = [
   {
     title: "Visit Us",
-    subtitle: "New Orlean, USA",
-    icon: (
-      <MapPin className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
-    ),
+    subtitle: "New Orleans, USA",
+    icon: "map-pin",
   },
   {
     title: "Call Us",
     subtitle: "+12 958 648 597",
-    icon: (
-      <Phone className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
-    ),
+    icon: "phone",
   },
   {
     title: "Working Hours",
     subtitle: "Mon - Sat: 10:00 AM - 7:00 PM",
-    icon: (
-      <Clock className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
-    ),
+    icon: "clock",
   },
   {
     title: "Email Us",
     subtitle: "Shopcart@gmail.com",
-    icon: (
-      <Mail className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
-    ),
+    icon: "mail",
   },
 ];
 
-const FooterTop = () => {
+const getIcon = (name?: string) => {
+  switch (name?.toLowerCase()) {
+    case "map-pin":
+    case "mappin":
+    case "map":
+      return (
+        <MapPin className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+      );
+    case "phone":
+      return (
+        <Phone className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+      );
+    case "clock":
+    case "working-hours":
+      return (
+        <Clock className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+      );
+    case "mail":
+    case "email":
+      return (
+        <Mail className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+      );
+    default:
+      return (
+        <MapPin className="h-6 w-6 text-gray-600 group-hover:text-primary transition-colors" />
+      );
+  }
+};
+
+const FooterTop = ({
+  contactItems,
+}: {
+  contactItems?: FooterContactItem[];
+}) => {
+  const items = contactItems?.length ? contactItems : defaultData;
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 border-b">
-      {data?.map((item, index) => (
+      {items?.map((item, index) => (
         <div
-          key={index}
+          key={`${item?.title ?? "contact"}-${index}`}
           className="flex items-center gap-3 group hover:bg-gray-50 p-4 transition-colors hoverEffect"
         >
-          {item?.icon}
+          {getIcon(item?.icon)}
           <div>
             <h3 className="font-semibold text-gray-900 group-hover:text-black hoverEffect">
               {item?.title}

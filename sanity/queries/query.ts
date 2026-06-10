@@ -31,6 +31,43 @@ const SITE_SETTINGS_QUERY = defineQuery(
   }`
 );
 
+const HEADER_SETTINGS_QUERY = defineQuery(
+  `*[_type == "headerSettings"][0]{
+    logo,
+    navigationLinks[]{
+      title,
+      href
+    },
+    callToAction{
+      text,
+      url
+    }
+  }`
+);
+
+const FOOTER_SETTINGS_QUERY = defineQuery(
+  `*[_type == "footerSettings"][0]{
+    contactItems[]{
+      title,
+      subtitle,
+      icon
+    },
+    quickLinks[]{
+      title,
+      href
+    },
+    categories[]{
+      title,
+      href
+    },
+    socialLinks[]{
+      platform,
+      url
+    },
+    newsletterText
+  }`
+);
+
 const MY_ORDERS_QUERY =
   defineQuery(`*[_type == 'order' && clerkUserId == $userId] | order(orderData desc){
 ...,products[]{
@@ -99,4 +136,6 @@ export {
   BLOG_CATEGORIES,
   OTHERS_BLOG_QUERY,
   SITE_SETTINGS_QUERY,
+  HEADER_SETTINGS_QUERY,
+  FOOTER_SETTINGS_QUERY,
 };

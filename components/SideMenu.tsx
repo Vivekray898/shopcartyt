@@ -1,11 +1,12 @@
+"use client";
 import React, { FC } from "react";
 import Logo from "./Logo";
 import { X } from "lucide-react";
-import { headerData } from "@/constants/data";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SocialMedia from "./SocialMedia";
 import { useOutsideClick } from "@/hooks";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,6 +15,9 @@ interface SidebarProps {
 const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
   const pathname = usePathname();
   const sidebarRef = useOutsideClick<HTMLDivElement>(onClose);
+  const { headerSettings } = useSiteSettings();
+  const navLinks = headerSettings?.navigationLinks ?? [];
+
   return (
     <div
       className={`fixed inset-y-0 h-screen left-0 z-50 w-full bg-black/50 text-white/70 shadow-xl ${
@@ -35,9 +39,9 @@ const SideMenu: FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         <div className="flex flex-col space-y-3.5 font-semibold tracking-wide">
-          {headerData?.map((item) => (
+          {navLinks?.map((item) => (
             <Link
-              href={item?.href}
+              href={item?.href ?? "/"}
               key={item?.title}
               className={`hover:text-shop_light_green hoverEffect ${
                 pathname === item?.href && "text-white"

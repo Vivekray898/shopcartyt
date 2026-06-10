@@ -1,4 +1,4 @@
-import { sanityFetch } from "../lib/live";
+import { client } from "../lib/client";
 import {
   BLOG_CATEGORIES,
   BRAND_QUERY,
@@ -11,6 +11,8 @@ import {
   PRODUCT_BY_SLUG_QUERY,
   SINGLE_BLOG_QUERY,
   SITE_SETTINGS_QUERY,
+  HEADER_SETTINGS_QUERY,
+  FOOTER_SETTINGS_QUERY,
 } from "./query";
 
 const getCategories = async (quantity?: number) => {
@@ -24,10 +26,7 @@ const getCategories = async (quantity?: number) => {
           ...,
           "productCount": count(*[_type == "product" && references(^._id)])
         }`;
-    const { data } = await sanityFetch({
-      query,
-      params: quantity ? { quantity } : {},
-    });
+    const data = await client.fetch(query, quantity ? { quantity } : {});
     return data;
   } catch (error) {
     console.log("Error fetching categories", error);
@@ -37,7 +36,7 @@ const getCategories = async (quantity?: number) => {
 
 const getAllBrands = async () => {
   try {
-    const { data } = await sanityFetch({ query: BRANDS_QUERY });
+    const data = await client.fetch(BRANDS_QUERY);
     return data ?? [];
   } catch (error) {
     console.log("Error fetching all brands:", error);
@@ -47,7 +46,7 @@ const getAllBrands = async () => {
 
 const getLatestBlogs = async () => {
   try {
-    const { data } = await sanityFetch({ query: LATEST_BLOG_QUERY });
+    const data = await client.fetch(LATEST_BLOG_QUERY);
     return data ?? [];
   } catch (error) {
     console.log("Error fetching latest Blogs:", error);
@@ -56,7 +55,7 @@ const getLatestBlogs = async () => {
 };
 const getDealProducts = async () => {
   try {
-    const { data } = await sanityFetch({ query: DEAL_PRODUCTS });
+    const data = await client.fetch(DEAL_PRODUCTS);
     return data ?? [];
   } catch (error) {
     console.log("Error fetching deal Products:", error);
@@ -65,13 +64,8 @@ const getDealProducts = async () => {
 };
 const getProductBySlug = async (slug: string) => {
   try {
-    const product = await sanityFetch({
-      query: PRODUCT_BY_SLUG_QUERY,
-      params: {
-        slug,
-      },
-    });
-    return product?.data || null;
+    const product = await client.fetch(PRODUCT_BY_SLUG_QUERY, { slug });
+    return product || null;
   } catch (error) {
     console.error("Error fetching product by ID:", error);
     return null;
@@ -79,13 +73,8 @@ const getProductBySlug = async (slug: string) => {
 };
 const getBrand = async (slug: string) => {
   try {
-    const product = await sanityFetch({
-      query: BRAND_QUERY,
-      params: {
-        slug,
-      },
-    });
-    return product?.data || null;
+    const product = await client.fetch(BRAND_QUERY, { slug });
+    return product || null;
   } catch (error) {
     console.error("Error fetching product by ID:", error);
     return null;
@@ -94,7 +83,7 @@ const getBrand = async (slug: string) => {
 
 const getSiteSettings = async () => {
   try {
-    const { data } = await sanityFetch({ query: SITE_SETTINGS_QUERY });
+    const data = await client.fetch(SITE_SETTINGS_QUERY);
     return data ?? null;
   } catch (error) {
     console.error("Error fetching site settings:", error);
@@ -102,13 +91,30 @@ const getSiteSettings = async () => {
   }
 };
 
+const getHeaderSettings = async () => {
+  try {
+    const data = await client.fetch(HEADER_SETTINGS_QUERY);
+    return data ?? null;
+  } catch (error) {
+    console.error("Error fetching header settings:", error);
+    return null;
+  }
+};
+
+const getFooterSettings = async () => {
+  try {
+    const data = await client.fetch(FOOTER_SETTINGS_QUERY);
+    return data ?? null;
+  } catch (error) {
+    console.error("Error fetching footer settings:", error);
+    return null;
+  }
+};
+
 const getMyOrders = async (userId: string) => {
   try {
-    const orders = await sanityFetch({
-      query: MY_ORDERS_QUERY,
-      params: { userId },
-    });
-    return orders?.data || null;
+    const orders = await client.fetch(MY_ORDERS_QUERY, { userId });
+    return orders || null;
   } catch (error) {
     console.error("Error fetching product by ID:", error);
     return null;
@@ -116,10 +122,7 @@ const getMyOrders = async (userId: string) => {
 };
 const getAllBlogs = async (quantity: number) => {
   try {
-    const { data } = await sanityFetch({
-      query: GET_ALL_BLOG,
-      params: { quantity },
-    });
+    const data = await client.fetch(GET_ALL_BLOG, { quantity });
     return data ?? [];
   } catch (error) {
     console.log("Error fetching all brands:", error);
@@ -129,10 +132,7 @@ const getAllBlogs = async (quantity: number) => {
 
 const getSingleBlog = async (slug: string) => {
   try {
-    const { data } = await sanityFetch({
-      query: SINGLE_BLOG_QUERY,
-      params: { slug },
-    });
+    const data = await client.fetch(SINGLE_BLOG_QUERY, { slug });
     return data ?? [];
   } catch (error) {
     console.log("Error fetching all brands:", error);
@@ -141,9 +141,7 @@ const getSingleBlog = async (slug: string) => {
 };
 const getBlogCategories = async () => {
   try {
-    const { data } = await sanityFetch({
-      query: BLOG_CATEGORIES,
-    });
+    const data = await client.fetch(BLOG_CATEGORIES);
     return data ?? [];
   } catch (error) {
     console.log("Error fetching all brands:", error);
@@ -153,10 +151,7 @@ const getBlogCategories = async () => {
 
 const getOthersBlog = async (slug: string, quantity: number) => {
   try {
-    const { data } = await sanityFetch({
-      query: OTHERS_BLOG_QUERY,
-      params: { slug, quantity },
-    });
+    const data = await client.fetch(OTHERS_BLOG_QUERY, { slug, quantity });
     return data ?? [];
   } catch (error) {
     console.log("Error fetching all brands:", error);
@@ -176,4 +171,6 @@ export {
   getBlogCategories,
   getOthersBlog,
   getSiteSettings,
+  getHeaderSettings,
+  getFooterSettings,
 };

@@ -12,53 +12,73 @@ interface Props {
   className?: string;
   iconClassName?: string;
   tooltipClassName?: string;
+  links?: Array<{ platform?: string; url?: string }>;
 }
-const socialLink = [
+
+const defaultLinks = [
   {
-    title: "Youtube",
-    href: "https://www.youtube.com/@reactjsBD",
-    icon: <Youtube className="w-5 h-5" />,
+    platform: "Youtube",
+    url: "https://www.youtube.com/@reactjsBD",
   },
   {
-    title: "Github",
-    href: "https://www.youtube.com/@reactjsBD",
-    icon: <Github className="w-5 h-5" />,
+    platform: "Github",
+    url: "https://www.youtube.com/@reactjsBD",
   },
   {
-    title: "Linkedin",
-    href: "https://www.youtube.com/@reactjsBD",
-    icon: <Linkedin className="w-5 h-5" />,
+    platform: "Linkedin",
+    url: "https://www.youtube.com/@reactjsBD",
   },
   {
-    title: "Facebook",
-    href: "https://www.youtube.com/@reactjsBD",
-    icon: <Facebook className="w-5 h-5" />,
+    platform: "Facebook",
+    url: "https://www.youtube.com/@reactjsBD",
   },
   {
-    title: "Slack",
-    href: "https://www.youtube.com/@reactjsBD",
-    icon: <Slack className="w-5 h-5" />,
+    platform: "Slack",
+    url: "https://www.youtube.com/@reactjsBD",
   },
 ];
 
-const SocialMedia = ({ className, iconClassName, tooltipClassName }: Props) => {
+const getIcon = (platform?: string) => {
+  switch (platform?.toLowerCase()) {
+    case "youtube":
+      return <Youtube className="w-5 h-5" />;
+    case "github":
+      return <Github className="w-5 h-5" />;
+    case "linkedin":
+      return <Linkedin className="w-5 h-5" />;
+    case "facebook":
+      return <Facebook className="w-5 h-5" />;
+    case "slack":
+      return <Slack className="w-5 h-5" />;
+    default:
+      return <Github className="w-5 h-5" />;
+  }
+};
+
+const SocialMedia = ({
+  className,
+  iconClassName,
+  tooltipClassName,
+  links,
+}: Props) => {
+  const items = links?.length ? links : defaultLinks;
+
   return (
     <TooltipProvider>
       <div className={cn("flex items-center gap-3.5", className)}>
-        {socialLink?.map((item) => (
-          <Tooltip key={item?.title}>
+        {items?.map((item) => (
+          <Tooltip key={item?.platform}>
             <TooltipTrigger asChild>
               <Link
-                key={item?.title}
                 target="_blank"
                 rel="noopener noreferrer"
-                href={item?.href}
+                href={item?.url ?? "#"}
                 className={cn(
                   "p-2 border rounded-full hover:text-white hover:border-shop_light_green hoverEffect",
                   iconClassName
                 )}
               >
-                {item?.icon}
+                {getIcon(item?.platform)}
               </Link>
             </TooltipTrigger>
             <TooltipContent
@@ -67,7 +87,7 @@ const SocialMedia = ({ className, iconClassName, tooltipClassName }: Props) => {
                 tooltipClassName
               )}
             >
-              {item?.title}
+              {item?.platform}
             </TooltipContent>
           </Tooltip>
         ))}

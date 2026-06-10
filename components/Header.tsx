@@ -11,7 +11,9 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { ClerkLoaded, SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { Logs } from "lucide-react";
-import { getMyOrders } from "@/sanity/queries";
+import Image from "next/image";
+import { getHeaderSettings, getMyOrders } from "@/sanity/queries";
+import { urlFor } from "@/sanity/lib/image";
 
 const Header = async () => {
   const user = await currentUser();
@@ -21,15 +23,39 @@ const Header = async () => {
     orders = await getMyOrders(userId);
   }
 
+  const headerSettings = await getHeaderSettings();
+  const headerLogo = headerSettings?.logo;
+  const callToAction = headerSettings?.callToAction;
+
   return (
     <header className="sticky top-0 z-50 py-5 bg-white/70 backdrop-blur-md">
       <Container className="flex items-center justify-between text-lightColor">
         <div className="w-auto md:w-1/3 flex items-center gap-2.5 justify-start md:gap-0">
           <MobileMenu />
-          <Logo />
+          {headerLogo ? (
+            <Link href="/" className="inline-flex items-center">
+              <Image
+                src={urlFor(headerLogo).width(160).height(40).url()}
+                alt="Site logo"
+                width={160}
+                height={40}
+                className="object-contain"
+              />
+            </Link>
+          ) : (
+            <Logo />
+          )}
         </div>
         <HeaderMenu />
         <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
+          {callToAction?.label && callToAction?.href && (
+            <Link
+              href={callToAction.href}
+              className="hidden md:inline-flex rounded-full bg-shop_light_green px-4 py-2 text-white font-semibold hover:bg-shop_dark_green hoverEffect"
+            >
+              {callToAction.label}
+            </Link>
+          )}
           <SearchBar />
           <CartIcon />
           <FavoriteButton />
