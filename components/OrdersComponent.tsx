@@ -1,6 +1,6 @@
 "use client";
 
-import { MY_ORDERS_QUERY_RESULT } from "@/sanity.types"; // FIXED: Corrected type name convention
+import { MY_ORDERS_QUERY_RESULT } from "@/sanity.types"; 
 import { TableBody, TableCell, TableRow } from "./ui/table";
 import {
   Tooltip,
@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 import PriceFormatter from "./PriceFormatter";
-import { format } from "date-fns";
+import dayjs from "dayjs"; // FIXED: Successfully replaced 'date-fns' with native project 'dayjs'
 import { X } from "lucide-react";
 import { useState } from "react";
 import OrderDetailDialog from "./OrderDetailDialog";
@@ -28,7 +28,6 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERY_RESULT }) => {
     <>
       <TableBody>
         <TooltipProvider>
-          {/* FIXED: Explicit item context binding to wipe out implicit any errors */}
           {orders.map((order: any) => (
             <Tooltip key={order?.orderNumber}>
               <TooltipTrigger asChild>
@@ -39,10 +38,13 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERY_RESULT }) => {
                   <TableCell className="font-medium">
                     {order.orderNumber?.slice(-10) ?? "N/A"}...
                   </TableCell>
+                  
+                  {/* FIXED: Formats correctly using your active dayjs dependency string parser */}
                   <TableCell className="hidden md:table-cell">
                     {order?.orderDate &&
-                      format(new Date(order.orderDate), "dd/MM/yyyy")}
+                      dayjs(order.orderDate).format("DD/MM/YYYY")}
                   </TableCell>
+                  
                   <TableCell>{order.customerName}</TableCell>
                   <TableCell className="hidden sm:table-cell">
                     {order.email}
