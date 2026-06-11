@@ -6,7 +6,7 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { BadgeCheck, Layers, FileText, Store } from "lucide-react";
 
-// UPDATED: Changed from consumer e-commerce values to catalog & showroom indicators
+// Catalog & showroom indicators
 const extraData = [
   {
     title: "Official Distributor",
@@ -35,7 +35,8 @@ const ShopByBrands = async () => {
   return (
     <div className="mb-10 lg:mb-20 bg-shop_light_bg p-5 lg:p-7 rounded-2xl border border-slate-100">
       <div className="flex items-center gap-5 justify-between mb-10">
-        <Title>Shop By Brands</Title>
+        {/* 🏛️ FIXED: Changed from "Shop By Brands" to represent your storefront / showroom natively */}
+        <Title>Our Store</Title>
         <Link
           href={"/shop"}
           className="text-sm font-bold tracking-wide text-slate-500 hover:text-shop_btn_dark_green hoverEffect"
@@ -55,7 +56,6 @@ const ShopByBrands = async () => {
             {brand?.image && (
               <Image
                 src={urlFor(brand?.image).url()}
-                // FIXED: Type-asserted to check dynamic properties without breaking tsc compilation
                 alt={(brand as any)?.brandName || (brand as any)?.title || "brandImage"}
                 width={200}
                 height={120}

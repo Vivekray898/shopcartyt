@@ -11,6 +11,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { urlFor } from "@/sanity/lib/image";
+import FloatingWhatsApp from "./FloatingWhatsApp"; // 🚀 IMPORT THE NEW COMPONENT
 
 const Footer = () => {
   const { footerSettings } = useSiteSettings();
@@ -30,9 +31,9 @@ const Footer = () => {
     `© ${new Date().getFullYear()} Fundgrube-Bestpreis. All rights reserved.`;
 
   return (
-    <footer className="bg-white border-t">
+    <footer className="bg-white border-t relative">
       <Container>
-        {/* FIXED: Passing down active synchronization state controls */}
+        {/* Passing down active synchronization state controls */}
         <FooterTop contactItems={contactItems} isLoading={isCurrentlyLoading} />
         
         <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -117,6 +118,9 @@ const Footer = () => {
           <div>{footerBottomText}</div>
         </div>
       </Container>
+
+      {/* 🟢 FLOATING ACTION PORTAL */}
+      <FloatingWhatsApp />
     </footer>
   );
 };
