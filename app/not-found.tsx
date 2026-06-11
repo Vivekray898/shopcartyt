@@ -1,56 +1,69 @@
+"use client";
 import Logo from "@/components/Logo";
 import Link from "next/link";
 import React from "react";
+import { ArrowLeft, Store } from "lucide-react";
 
 const NotFoundPage = () => {
   return (
-    <div className="bg-white flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-10 md:py-32">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
+    <div className="bg-slate-50/50 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-16 md:py-32 min-h-[80vh]">
+      <div className="max-w-md w-full bg-white p-8 rounded-2xl border border-slate-100 shadow-xs space-y-8 text-center animate-fadeIn">
+        
+        {/* Branding & Header */}
+        <div className="flex flex-col items-center">
           <Logo />
 
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Looking for something?
+          <h1 className="mt-8 text-4xl font-black text-slate-900 tracking-tight">
+            404
+          </h1>
+          <h2 className="mt-2 text-xl font-bold text-slate-800 tracking-tight">
+            Page Not Found
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            We&apos;re sorry. The Web address you entered is not a functioning
-            page on our site.
+          <p className="mt-3 text-sm text-slate-500 leading-relaxed">
+            The Web address you entered is not a functioning page on our site. 
+            It may have been moved, renamed, or temporarily deleted.
           </p>
         </div>
-        <div className="mt-8 space-y-6">
-          <div className="rounded-md shadow-sm space-y-4">
-            <Link
-              href="/"
-              className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-semibold rounded-md text-white bg-shop_dark_green/80 hover:bg-shop_dark_green focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amazonOrangeDark hoverEffect"
-            >
-              Go to Shopcart&apos;s home page
-            </Link>
-            <Link
-              href="/help"
-              className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-semibold rounded-md text-amazonBlue bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amazonBlue"
-            >
-              Help
-            </Link>
-          </div>
+
+        {/* Action Navigation Matrix */}
+        <div className="space-y-3">
+          <Link
+            href="/"
+            className="w-full flex items-center justify-center gap-2 px-5 py-3 border border-transparent text-xs font-black uppercase tracking-wider rounded-xl text-white bg-shop_light_green hover:bg-shop_light_green/90 shadow-2xs hover:shadow-md transition-all duration-200 active:scale-98 cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Go to Home Page
+          </Link>
+          
+          <Link
+            href="/shop"
+            className="w-full flex items-center justify-center gap-2 px-5 py-3 border border-slate-200 bg-white text-xs font-black uppercase tracking-wider rounded-xl text-slate-700 hover:bg-slate-50 transition-all duration-200 active:scale-98 cursor-pointer"
+          >
+            <Store className="w-4 h-4 text-shop_light_green" />
+            Browse Our Collection
+          </Link>
         </div>
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600">
-            Need help? Visit the{" "}
+
+        {/* Support Fallback Footer */}
+        <div className="pt-4 border-t border-slate-100">
+          <p className="text-xs font-semibold text-slate-400">
+            Need help? Visit our{" "}
             <Link
-              href="/help"
-              className="font-medium text-amazon-blue hover:text-amazon-blue-dark"
+              href="/faq"
+              className="font-bold text-shop_light_green hover:underline inline-flex items-center gap-0.5"
             >
-              Help section
+              FAQ Section
             </Link>{" "}
             or{" "}
             <Link
               href="/contact"
-              className="font-medium text-amazon-blue hover:text-amazon-blue-dark"
+              className="font-bold text-shop_light_green hover:underline"
             >
-              contact us
-            </Link>
+              Contact Us
+            </Link>.
           </p>
         </div>
+
       </div>
     </div>
   );
