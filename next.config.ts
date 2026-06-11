@@ -10,10 +10,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // 🚀 FIXED: Tells the Vercel production compiler to ignore ESLint rule crashes
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  // FIXED: Removed the deprecated 'eslint' block to fix the TS2353 validation error.
+  // Next.js v16 handles builds through Turbopack natively now.
   typescript: {
     ignoreBuildErrors: true,
   },
