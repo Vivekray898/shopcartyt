@@ -4,9 +4,7 @@ import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Title from "./Title";
 import CategoryList from "./shop/CategoryList";
-import { useSearchParams } from "next/navigation";
 import BrandList from "./shop/BrandList";
-// REMOVED: PriceList import is gone so it won't populate bundle configurations
 import { client } from "@/sanity/lib/client";
 import { Loader2, SlidersHorizontal, X } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
@@ -15,32 +13,43 @@ import ProductCard from "./ProductCard";
 interface Props {
   categories: Category[];
   brands: BRANDS_QUERY_RESULT; 
+  initialSearch?: string;
+  initialBrand?: string;
+  initialCategory?: string;
 }
 
-const Shop = ({ categories, brands }: Props) => {
-  const searchParams = useSearchParams();
-  const brandParams = searchParams?.get("brand");
-  const categoryParams = searchParams?.get("category");
-  
+const Shop = ({ 
+  categories, 
+  brands, 
+  initialSearch = "", 
+  initialBrand = "", 
+  initialCategory = "" 
+}: Props) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(
-    categoryParams || null
-  );
-  const [selectedBrand, setSelectedBrand] = useState<string | null>(
-    brandParams || null
-  );
+  const [searchQuery, setSearchQuery] = useState<string>(initialSearch);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory || null);
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(initialBrand || null);
+
+  useEffect(() => {
+    setSearchQuery(initialSearch);
+  }, [initialSearch]);
+
+  // 🚀 FIXED: Closes the mobile filter drawer overlay smoothly whenever a selection state shifts
+  useEffect(() => {
+    setIsMobileFilterOpen(false);
+  }, [selectedCategory, selectedBrand]);
 
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      // Streamlined GROQ parameters to strictly isolate shop branches and categorizations
       const query = `
         *[_type == 'product' 
           && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
           && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
+          && ($searchQuery == "" || name match $searchQuery + "*")
         ] 
         | order(name asc) {
           ...,
@@ -50,7 +59,7 @@ const Shop = ({ categories, brands }: Props) => {
       `;
       const data = await client.fetch(
         query,
-        { selectedCategory, selectedBrand },
+        { selectedCategory, selectedBrand, searchQuery },
         { next: { revalidate: 0 } }
       );
       setProducts(data);
@@ -63,7 +72,7 @@ const Shop = ({ categories, brands }: Props) => {
 
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory, selectedBrand]);
+  }, [selectedCategory, selectedBrand, searchQuery]);
 
   return (
     <div className="border-t min-h-screen bg-slate-50/30">
@@ -77,18 +86,19 @@ const Shop = ({ categories, brands }: Props) => {
                 Showroom Inventory
               </Title>
               <h1 className="text-xl font-black text-slate-900 tracking-tight sm:text-2xl">
-                Find products that fit your needs
+                {searchQuery ? `Search Results for "${searchQuery}"` : "Find products that fit your needs"}
               </h1>
             </div>
 
             <div className="flex items-center gap-3">
-              {(selectedCategory !== null || selectedBrand !== null) && (
+              {(selectedCategory !== null || selectedBrand !== null || searchQuery !== "") && (
                 <button
                   onClick={() => {
                     setSelectedCategory(null);
                     setSelectedBrand(null);
+                    setSearchQuery("");
                   }}
-                  className="text-xs font-semibold uppercase tracking-wider text-rose-600 hover:text-rose-700 bg-rose-50 px-3 py-2 rounded-xl transition-all"
+                  className="text-xs font-semibold uppercase tracking-wider text-rose-600 hover:text-rose-700 bg-rose-50 px-3 py-2 rounded-xl transition-all cursor-pointer"
                 >
                   Reset Filters
                 </button>
@@ -96,7 +106,7 @@ const Shop = ({ categories, brands }: Props) => {
 
               <button
                 onClick={() => setIsMobileFilterOpen(true)}
-                className="flex md:hidden items-center gap-2 bg-slate-950 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition hover:bg-slate-800 shadow-sm"
+                className="flex md:hidden items-center gap-2 bg-slate-950 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition hover:bg-slate-800 shadow-sm cursor-pointer"
               >
                 <SlidersHorizontal className="w-4 h-4" />
                 Filters
@@ -125,7 +135,7 @@ const Shop = ({ categories, brands }: Props) => {
               <span className="font-bold text-slate-900 text-base">Filter Options</span>
               <button
                 onClick={() => setIsMobileFilterOpen(false)}
-                className="p-1.5 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition"
+                className="p-1.5 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -137,18 +147,14 @@ const Shop = ({ categories, brands }: Props) => {
                 selectedCategory={selectedCategory}
                 setSelectedCategory={(cat) => {
                   setSelectedCategory(cat);
-                  setIsMobileFilterOpen(false);
                 }}
               />
               <BrandList
                 brands={brands}
-                setSelectedBrand={(brand) => {
-                  setSelectedBrand(brand);
-                  setIsMobileFilterOpen(false);
-                }}
+                // 🚀 FIXED: Passing the raw state dispatch handler matches the type definition inside BrandList.tsx perfectly
+                setSelectedBrand={setSelectedBrand}
                 selectedBrand={selectedBrand}
               />
-              {/* FIXED: Removed PriceList block selector element from layout tree */}
             </div>
           </aside>
 
@@ -164,7 +170,7 @@ const Shop = ({ categories, brands }: Props) => {
             ) : products?.length > 0 ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
                 {products?.map((product) => (
-                  <ProductCard key={product?._id} product={product as any} />
+                  <ProductCard key={product?._id} product={product as any} isCatalogueMode={true} />
                 ))}
               </div>
             ) : (
