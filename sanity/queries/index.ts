@@ -158,6 +158,7 @@ const getOthersBlog = async (slug: string, quantity: number) => {
     return [];
   }
 };
+// Add these to the export list at the very bottom of your queries index wrapper file:
 export {
   getCategories,
   getAllBrands,
@@ -173,4 +174,9 @@ export {
   getSiteSettings,
   getHeaderSettings,
   getFooterSettings,
+  
+  // Exporting raw query string tags safely for other multi-fetch structures
+  SITE_SETTINGS_QUERY,
+  HEADER_SETTINGS_QUERY,
+  FOOTER_SETTINGS_QUERY
 };

@@ -4,13 +4,15 @@ import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ShopModeProvider } from "@/hooks/useShopMode";
 import { getSiteSettings } from "@/sanity/queries";
+// IMPORT YOUR NEW AUTO TRANSLATOR COMPONENT
+import AutoTranslator from "@/components/AutoTranslator"; 
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - Shopcart online store",
-    default: "Shopcart online store",
+    template: "%s - FundGrube online store",
+    default: "FundGrube online store",
   },
-  description: "Shopcart online store, Your one stop shop for all your needs",
+  description: "FundGrube online store, Your one stop shop for all your needs",
 };
 
 export default async function RootLayout({
@@ -29,6 +31,9 @@ export default async function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
+        
+        {/* 🚀 RUNS AUTO-TRANSLATION CHECKS FOR EVERY VISITOR ENTIRELY FOR FREE */}
+        <AutoTranslator />
       </ShopModeProvider>
     </ClerkProvider>
   );

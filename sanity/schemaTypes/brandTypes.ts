@@ -1,31 +1,38 @@
-import { TagIcon } from "@sanity/icons";
+import { HomeIcon } from "@sanity/icons"; // FIXED: Using valid Sanity building icon
 import { defineField, defineType } from "sanity";
 
 export const brandType = defineType({
-  name: "brand",
-  title: "Brand",
+  // Keep internal name as "brand" so frontend queries, filters, and state logic don't break!
+  name: "brand", 
+  title: "Shops & Outlets", // Changes the title header in Sanity Studio Sidebar
   type: "document",
-  icon: TagIcon,
+  icon: HomeIcon, // Swapped to a valid registered icon asset
   fields: [
     defineField({
       name: "title",
+      title: "Shop Name", // E.g., "Main Showroom", "Warehouse Outlet"
       type: "string",
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "slug",
+      title: "Shop Archive URL Slug",
       type: "slug",
       options: {
         source: "title",
+        maxLength: 96,
       },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: "description",
+      title: "Shop Profile / Location Details",
       type: "text",
+      description: "Briefly describe this specific shop partition location or archive rules.",
     }),
     defineField({
       name: "image",
-      title: "Brand Image",
+      title: "Shop Logo / Frontage Image",
       type: "image",
       options: {
         hotspot: true,

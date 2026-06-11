@@ -1,7 +1,8 @@
 "use client";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+// FIXED: Replaced "framer-motion" with your runtime active "motion/react" module
+import { motion } from "motion/react"; 
 import { emptyCart } from "@/images";
 import Image from "next/image";
 
@@ -29,8 +30,9 @@ export default function EmptyCart() {
           <Image
             src={emptyCart}
             alt="Empty shopping cart"
-            layout="fill"
-            objectFit="contain"
+            fill
+            sizes="(max-width: 768px) 100vw, 192px"
+            style={{ objectFit: "contain" }}
             className="drop-shadow-lg"
           />
           <motion.div

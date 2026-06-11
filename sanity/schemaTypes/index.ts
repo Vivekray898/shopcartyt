@@ -11,20 +11,41 @@ import { addressType } from "./addressType";
 import { siteSettingsType } from "./siteSettingsType";
 import { headerSettingsType } from "./headerSettingsType";
 import { footerSettingsType } from "./footerSettingsType";
+import { productVariantType } from "./productVariant"; 
+import { bannerType } from "./bannerType"; 
+
+// 1. IMPORT NO-CODE PAGE BUILDER SCHEMAS
+import { pageType } from "./pageType";
+import { heroBlock, productGridBlock, textContentBlock } from "./pageBlocks";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
-    categoryType,
-    blockContentType,
+    // Core Commerce
     productType,
-    orderType,
+    productVariantType,
+    categoryType,
     brandType,
+    orderType,
+    addressType,
+
+    // Content & Marketing
     blogType,
     blogCategoryType,
     authorType,
-    addressType,
+    bannerType,
+
+    // 2. REGISTER THE NO-CODE BUILDER FILES NATIVELY
+    pageType,
+    heroBlock,
+    productGridBlock,
+    textContentBlock,
+
+    // Site Configuration
     siteSettingsType,
     headerSettingsType,
     footerSettingsType,
+
+    // Utility
+    blockContentType,
   ],
 };

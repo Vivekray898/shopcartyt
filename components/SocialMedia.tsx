@@ -1,3 +1,5 @@
+"use client";
+
 import { Facebook, Github, Linkedin, Slack, Youtube } from "lucide-react";
 import React from "react";
 import {
@@ -8,37 +10,23 @@ import {
 } from "./ui/tooltip";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+
 interface Props {
   className?: string;
   iconClassName?: string;
   tooltipClassName?: string;
-  links?: Array<{ platform?: string; url?: string }>;
+  links?: Array<{ platform?: string | null; url?: string | null }>;
 }
 
 const defaultLinks = [
-  {
-    platform: "Youtube",
-    url: "https://www.youtube.com/@reactjsBD",
-  },
-  {
-    platform: "Github",
-    url: "https://www.youtube.com/@reactjsBD",
-  },
-  {
-    platform: "Linkedin",
-    url: "https://www.youtube.com/@reactjsBD",
-  },
-  {
-    platform: "Facebook",
-    url: "https://www.youtube.com/@reactjsBD",
-  },
-  {
-    platform: "Slack",
-    url: "https://www.youtube.com/@reactjsBD",
-  },
+  { platform: "Youtube", url: "https://www.youtube.com/@reactjsBD" },
+  { platform: "Github", url: "https://github.com" },
+  { platform: "Linkedin", url: "https://linkedin.com" },
+  { platform: "Facebook", url: "https://facebook.com" },
+  { platform: "Slack", url: "https://slack.com" },
 ];
 
-const getIcon = (platform?: string) => {
+const getIcon = (platform?: string | null) => {
   switch (platform?.toLowerCase()) {
     case "youtube":
       return <Youtube className="w-5 h-5" />;
@@ -61,20 +49,21 @@ const SocialMedia = ({
   tooltipClassName,
   links,
 }: Props) => {
-  const items = links?.length ? links : defaultLinks;
+  const items = links && links.length > 0 ? links : defaultLinks;
 
   return (
     <TooltipProvider>
-      <div className={cn("flex items-center gap-3.5", className)}>
-        {items?.map((item) => (
-          <Tooltip key={item?.platform}>
+      <div className={cn("flex flex-wrap items-center gap-3.5", className)}>
+        {items?.map((item, index) => (
+          <Tooltip key={item?.platform || index}>
             <TooltipTrigger asChild>
               <Link
                 target="_blank"
                 rel="noopener noreferrer"
                 href={item?.url ?? "#"}
                 className={cn(
-                  "p-2 border rounded-full hover:text-white hover:border-shop_light_green hoverEffect",
+                  "p-2 border rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105",
+                  // FIXED: Removed absolute 'text-white/70' so iconClassName overrides work perfectly!
                   iconClassName
                 )}
               >
@@ -83,11 +72,11 @@ const SocialMedia = ({
             </TooltipTrigger>
             <TooltipContent
               className={cn(
-                "bg-white text-darkColor font-semibold",
+                "bg-white text-darkColor font-semibold shadow-md",
                 tooltipClassName
               )}
             >
-              {item?.platform}
+              {item?.platform || "Social Link"}
             </TooltipContent>
           </Tooltip>
         ))}

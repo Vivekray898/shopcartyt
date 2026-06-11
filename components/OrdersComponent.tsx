@@ -1,6 +1,6 @@
 "use client";
 
-import { MY_ORDERS_QUERYResult } from "@/sanity.types";
+import { MY_ORDERS_QUERY_RESULT } from "@/sanity.types"; // FIXED: Corrected type name convention
 import { TableBody, TableCell, TableRow } from "./ui/table";
 import {
   Tooltip,
@@ -15,18 +15,21 @@ import { useState } from "react";
 import OrderDetailDialog from "./OrderDetailDialog";
 import toast from "react-hot-toast";
 
-const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
+const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERY_RESULT }) => {
   const [selectedOrder, setSelectedOrder] = useState<
-    MY_ORDERS_QUERYResult[number] | null
+    MY_ORDERS_QUERY_RESULT[number] | null
   >(null);
+  
   const handleDelete = () => {
     toast.error("Delete method applied for Admin");
   };
+
   return (
     <>
       <TableBody>
         <TooltipProvider>
-          {orders.map((order) => (
+          {/* FIXED: Explicit item context binding to wipe out implicit any errors */}
+          {orders.map((order: any) => (
             <Tooltip key={order?.orderNumber}>
               <TooltipTrigger asChild>
                 <TableRow

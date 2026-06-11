@@ -56,6 +56,8 @@ export const productType = defineType({
       name: "stock",
       title: "Stock",
       type: "number",
+      // FIXED: Sets stock to 999 by default so it stays available if left blank
+      initialValue: 999, 
       validation: (Rule) => Rule.min(0),
     }),
     defineField({
@@ -64,7 +66,12 @@ export const productType = defineType({
       type: "reference",
       to: { type: "brand" },
     }),
-
+    defineField({
+      name: "variant",
+      title: "Product Type",
+      type: "reference",
+      to: [{ type: "productVariant" }],
+    }),
     defineField({
       name: "status",
       title: "Product Status",
@@ -74,19 +81,6 @@ export const productType = defineType({
           { title: "New", value: "new" },
           { title: "Hot", value: "hot" },
           { title: "Sale", value: "sale" },
-        ],
-      },
-    }),
-    defineField({
-      name: "variant",
-      title: "Product Type",
-      type: "string",
-      options: {
-        list: [
-          { title: "Gadget", value: "gadget" },
-          { title: "Appliances", value: "appliances" },
-          { title: "Refrigerators", value: "refrigerators" },
-          { title: "Others", value: "others" },
         ],
       },
     }),
@@ -109,7 +103,8 @@ export const productType = defineType({
       const image = media && media[0];
       return {
         title: title,
-        subtitle: `$${subtitle}`,
+        // FIXED: Displays with the Euro (€) symbol inside Sanity Studio previews
+        subtitle: subtitle ? `€${subtitle}` : "Price Not Set",
         media: image,
       };
     },

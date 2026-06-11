@@ -28,8 +28,9 @@ export const headerSettingsType = defineType({
             }),
             defineField({
               name: "href",
-              title: "Href",
-              type: "url",
+              title: "Href / Route Path",
+              type: "string", // Kept as string to support /shop routes cleanly
+              description: "Accepts absolute URLs (e.g., https://google.com) or internal relative paths (e.g., /shop, /blog)",
             }),
           ],
           preview: {
@@ -47,14 +48,17 @@ export const headerSettingsType = defineType({
       type: "object",
       fields: [
         defineField({
-          name: "label",
-          title: "Label",
+          // FIXED: Renamed from 'label' back to 'text' to match database and frontend queries
+          name: "text", 
+          title: "Label / Text",
           type: "string",
         }),
         defineField({
-          name: "href",
-          title: "Href",
-          type: "url",
+          // FIXED: Renamed from 'href' back to 'url' to match database and frontend queries
+          name: "url", 
+          title: "Href / Route Path",
+          type: "string", 
+          description: "Supports relative paths like /shop or absolute external links",
         }),
       ],
     }),
@@ -62,7 +66,7 @@ export const headerSettingsType = defineType({
   preview: {
     select: {
       title: "navigationLinks.0.title",
-      subtitle: "callToAction.label",
+      subtitle: "callToAction.text", // Updated fallback to match text
     },
     prepare(selection) {
       const { title, subtitle } = selection;

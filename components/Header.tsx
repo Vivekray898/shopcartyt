@@ -48,12 +48,13 @@ const Header = async () => {
         </div>
         <HeaderMenu />
         <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
-          {callToAction?.label && callToAction?.href && (
+          {/* FIXED: Swapped out legacy .label and .href keys for Sanity's .text and .url shapes */}
+          {callToAction?.text && callToAction?.url && (
             <Link
-              href={callToAction.href}
+              href={callToAction.url}
               className="hidden md:inline-flex rounded-full bg-shop_light_green px-4 py-2 text-white font-semibold hover:bg-shop_dark_green hoverEffect"
             >
-              {callToAction.label}
+              {callToAction.text}
             </Link>
           )}
           <SearchBar />

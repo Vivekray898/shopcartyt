@@ -60,7 +60,7 @@ const CartPage = () => {
       if (defaultAddress) {
         setSelectedAddress(defaultAddress);
       } else if (data.length > 0) {
-        setSelectedAddress(data[0]); // Optional: select first address if no default
+        setSelectedAddress(data[0]); 
       }
     } catch (error) {
       console.log("Addresses fetching error:", error);
@@ -68,9 +68,11 @@ const CartPage = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchAddresses();
   }, []);
+
   const handleResetCart = () => {
     const confirmed = window.confirm(
       "Are you sure you want to reset your cart?"
@@ -101,6 +103,7 @@ const CartPage = () => {
       setLoading(false);
     }
   };
+
   if (catalogueMode) {
     return (
       <div className="bg-gray-50 pb-52 md:pb-10">
@@ -148,8 +151,7 @@ const CartPage = () => {
                             {product?.images && (
                               <Link
                                 href={`/product/${product?.slug?.current}`}
-                                className="border p-0.5 md:p-1 mr-2 rounded-md
-                                 overflow-hidden group"
+                                className="border p-0.5 md:p-1 mr-2 rounded-md overflow-hidden group"
                               >
                                 <Image
                                   src={urlFor(product?.images[0]).url()}
@@ -169,7 +171,8 @@ const CartPage = () => {
                                 <p className="text-sm capitalize">
                                   Variant:{" "}
                                   <span className="font-semibold">
-                                    {product?.variant}
+                                    {/* FIXED: Safely extracting string parameter value from Sanity reference object mapping */}
+                                    {(product?.variant as any)?.title || "Standard"}
                                   </span>
                                 </p>
                                 <p className="text-sm capitalize">
@@ -184,7 +187,7 @@ const CartPage = () => {
                                   <Tooltip>
                                     <TooltipTrigger>
                                       <ProductSideMenu
-                                        product={product}
+                                        product={product as any}
                                         className="relative top-0 right-0"
                                       />
                                     </TooltipTrigger>
@@ -217,7 +220,7 @@ const CartPage = () => {
                               amount={(product?.price as number) * itemCount}
                               className="font-bold text-lg"
                             />
-                            <QuantityButtons product={product} />
+                            <QuantityButtons product={product as any} />
                           </div>
                         </div>
                       );

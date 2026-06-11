@@ -1,11 +1,11 @@
-import { BRANDS_QUERYResult } from "@/sanity.types";
+import { BRANDS_QUERY_RESULT } from "@/sanity.types"; // FIXED: Corrected type name convention
 import React from "react";
 import Title from "../Title";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 
 interface Props {
-  brands: BRANDS_QUERYResult;
+  brands: BRANDS_QUERY_RESULT; // FIXED: Maps natively with Sanity Typegen outputs now
   selectedBrand?: string | null;
   setSelectedBrand: React.Dispatch<React.SetStateAction<string | null>>;
 }
@@ -13,9 +13,12 @@ interface Props {
 const BrandList = ({ brands, selectedBrand, setSelectedBrand }: Props) => {
   return (
     <div className="w-full bg-white p-5">
-      <Title className="text-base font-black">Brands</Title>
+      {/* UPDATED: Displays as Shops & Outlets on your storefront sidebar panel */}
+      <Title className="text-base font-black">Shops & Outlets</Title>
+      
       <RadioGroup value={selectedBrand || ""} className="mt-2 space-y-1">
-        {brands?.map((brand) => (
+        {/* FIXED: Explicit item context binding to wipe out implicit any errors */}
+        {brands?.map((brand: any) => (
           <div
             key={brand?._id}
             onClick={() => setSelectedBrand(brand?.slug?.current as string)}
@@ -34,6 +37,7 @@ const BrandList = ({ brands, selectedBrand, setSelectedBrand }: Props) => {
             </Label>
           </div>
         ))}
+        
         {selectedBrand && (
           <button
             onClick={() => setSelectedBrand(null)}

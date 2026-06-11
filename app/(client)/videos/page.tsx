@@ -36,7 +36,8 @@ const parseRssFeed = (xml: string): VideoItem[] => {
         publishedAt: publishedMatch[1],
       } as VideoItem;
     })
-    .filter((item): item is VideoItem => item !== null)
+    // FIXED: Added absolute type assertions to remove implicit item parameter checking errors
+    .filter((item: VideoItem | null): item is VideoItem => item !== null)
     .slice(0, 8);
 };
 
@@ -92,7 +93,8 @@ const fetchYoutubeApiVideos = async (channelId: string, apiKey: string) => {
             publishedAt: snippet.publishedAt,
           } as VideoItem;
         })
-        .filter((item): item is VideoItem => item !== null)
+        // FIXED: Explicit type constraints added to ensure compatibility within API routes
+        .filter((item: VideoItem | null): item is VideoItem => item !== null)
     : [];
 };
 
@@ -144,19 +146,16 @@ const VideosPage = async () => {
         </p>
       </div>
 
-      {/* MODIFIED GRID: 1 column mobile, 2 columns tablet, 3-4 columns desktop for portrait layouts */}
-      <main className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <main className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {videos.length > 0 ? (
           videos.map((video) => (
             <article
               key={video.id}
               className="group space-y-3 rounded-2xl border border-slate-100 bg-white p-3 shadow-xs transition hover:shadow-md"
             >
-              {/* VERTICAL PREVIEW WRAPPER (9:16 Aspect Ratio) */}
               <div className="overflow-hidden rounded-xl bg-slate-950 shadow-inner">
                 <div className="aspect-[9/16] w-full">
                   <iframe
-                    // Using standard query flags to minimize player controls on tight layouts
                     src={`https://www.youtube.com/embed/${video.id}?rel=0&modestbranding=1&iv_load_policy=3`}
                     title={video.title}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -167,10 +166,10 @@ const VideosPage = async () => {
                 </div>
               </div>
               <div className="px-1 py-0.5 space-y-1">
-                <h3 className="text-sm font-bold tracking-tight text-slate-800 line-clamp-2 group-hover:text-slate-950">
+                <h3 className="text-xs md:text-sm font-bold tracking-tight text-slate-800 line-clamp-2 group-hover:text-slate-950">
                   {video.title}
                 </h3>
-                <p className="text-xs font-medium text-slate-400">
+                <p className="text-[10px] md:text-xs font-medium text-slate-400">
                   {formatPublishedDate(video.publishedAt)}
                 </p>
               </div>

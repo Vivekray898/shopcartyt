@@ -6,16 +6,27 @@ interface Props {
 }
 
 const PriceFormatter = ({ amount, className }: Props) => {
-  const formattedPrice = new Number(amount).toLocaleString("en-US", {
-    currency: "USD",
-    style: "currency",
-    minimumFractionDigits: 2,
-  });
+  // 1. Check if the price is missing, null, or explicitly 0
+  const isZeroOrInvalid = amount === undefined || amount === null || amount === 0;
+
+  // 2. Format using Euro currency guidelines with European-friendly rendering layouts
+  const formattedPrice = !isZeroOrInvalid
+    ? new Number(amount).toLocaleString("en-IE", {
+        currency: "EUR",
+        style: "currency",
+        minimumFractionDigits: 2,
+      })
+    : "";
+
   return (
     <span
-      className={twMerge("text-sm font-semibold text-darkColor", className)}
+      className={twMerge(
+        "text-sm font-semibold text-darkColor",
+        isZeroOrInvalid && "text-slate-500 italic font-medium", // Soft styling for showroom fallback text
+        className
+      )}
     >
-      {formattedPrice}
+      {isZeroOrInvalid ? "Price on Request" : formattedPrice}
     </span>
   );
 };

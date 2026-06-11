@@ -81,12 +81,13 @@ const WishListProducts = () => {
                       <td className="p-2 capitalize hidden md:table-cell">
                         {product?.categories && (
                           <p className="uppercase line-clamp-1 text-xs font-medium">
-                            {product.categories.map((cat) => cat).join(", ")}
+                            {product.categories.map((cat: any) => cat?.title || cat).join(", ")}
                           </p>
                         )}
                       </td>
-                      <td className="p-2 capitalize hidden md:table-cell">
-                        {product?.variant}
+                      <td className="p-2 capitalize hidden md:table-cell font-semibold text-slate-800">
+                        {/* FIXED: Pulls the title name cleanly instead of trying to pass down the whole reference row object */}
+                        {(product?.variant as any)?.title || "Standard Item"}
                       </td>
                       <td
                         className={`p-2 w-24 ${
@@ -100,10 +101,10 @@ const WishListProducts = () => {
                           : "Out of Stock"}
                       </td>
                       <td className="p-2">
-                        <PriceFormatter amount={product?.price} />
+                        <PriceFormatter amount={product?.price ?? undefined} />
                       </td>
                       <td className="p-2">
-                        <AddToCartButton product={product} className="w-full" />
+                        <AddToCartButton product={product as any} className="w-full" />
                       </td>
                     </tr>
                   ))}

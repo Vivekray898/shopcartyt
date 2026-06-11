@@ -1,57 +1,56 @@
 "use client";
-import { BRANDS_QUERYResult, Category, Product } from "@/sanity.types";
+import { BRANDS_QUERY_RESULT, Category, Product } from "@/sanity.types"; 
 import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Title from "./Title";
 import CategoryList from "./shop/CategoryList";
 import { useSearchParams } from "next/navigation";
 import BrandList from "./shop/BrandList";
-import PriceList from "./shop/PriceList";
+// REMOVED: PriceList import is gone so it won't populate bundle configurations
 import { client } from "@/sanity/lib/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, SlidersHorizontal, X } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
 
 interface Props {
   categories: Category[];
-  brands: BRANDS_QUERYResult;
+  brands: BRANDS_QUERY_RESULT; 
 }
+
 const Shop = ({ categories, brands }: Props) => {
   const searchParams = useSearchParams();
   const brandParams = searchParams?.get("brand");
   const categoryParams = searchParams?.get("category");
+  
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     categoryParams || null
   );
   const [selectedBrand, setSelectedBrand] = useState<string | null>(
     brandParams || null
   );
-  const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
+
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let minPrice = 0;
-      let maxPrice = 10000;
-      if (selectedPrice) {
-        const [min, max] = selectedPrice.split("-").map(Number);
-        minPrice = min;
-        maxPrice = max;
-      }
+      // Streamlined GROQ parameters to strictly isolate shop branches and categorizations
       const query = `
-      *[_type == 'product' 
-        && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
-        && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
-        && price >= $minPrice && price <= $maxPrice
-      ] 
-      | order(name asc) {
-        ...,"categories": categories[]->title
-      }
-    `;
+        *[_type == 'product' 
+          && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
+          && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
+        ] 
+        | order(name asc) {
+          ...,
+          "brand": brand->{title},
+          "variant": variant->{title}
+        }
+      `;
       const data = await client.fetch(
         query,
-        { selectedCategory, selectedBrand, minPrice, maxPrice },
+        { selectedCategory, selectedBrand },
         { next: { revalidate: 0 } }
       );
       setProducts(data);
@@ -64,68 +63,115 @@ const Shop = ({ categories, brands }: Props) => {
 
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory, selectedBrand, selectedPrice]);
+  }, [selectedCategory, selectedBrand]);
+
   return (
-    <div className="border-t">
+    <div className="border-t min-h-screen bg-slate-50/30">
       <Container className="mt-5">
-        <div className="sticky top-0 z-10 mb-5">
-          <div className="flex items-center justify-between">
-            <Title className="text-lg uppercase tracking-wide">
-              Get the products as your needs
-            </Title>
-            {(selectedCategory !== null ||
-              selectedBrand !== null ||
-              selectedPrice !== null) && (
-              <button
-                onClick={() => {
-                  setSelectedCategory(null);
-                  setSelectedBrand(null);
-                  setSelectedPrice(null);
-                }}
-                className="text-shop_dark_green underline text-sm mt-2 font-medium hover:text-darkRed hoverEffect"
-              >
-                Reset Filters
-              </button>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col md:flex-row gap-5 border-t border-t-shop_dark_green/50">
-          <div className="md:sticky md:top-20 md:self-start md:h-[calc(100vh-160px)] md:overflow-y-auto md:min-w-64 pb-5 md:border-r border-r-shop_btn_dark_green/50 scrollbar-hide">
-            <CategoryList
-              categories={categories}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-            />
-            <BrandList
-              brands={brands}
-              setSelectedBrand={setSelectedBrand}
-              selectedBrand={selectedBrand}
-            />
-            <PriceList
-              setSelectedPrice={setSelectedPrice}
-              selectedPrice={selectedPrice}
-            />
-          </div>
-          <div className="flex-1 pt-5">
-            <div className="h-[calc(100vh-160px)] overflow-y-auto pr-2 scrollbar-hide">
-              {loading ? (
-                <div className="p-20 flex flex-col gap-2 items-center justify-center bg-white">
-                  <Loader2 className="w-10 h-10 text-shop_dark_green animate-spin" />
-                  <p className="font-semibold tracking-wide text-base">
-                    Product is loading . . .
-                  </p>
-                </div>
-              ) : products?.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5">
-                  {products?.map((product) => (
-                    <ProductCard key={product?._id} product={product} />
-                  ))}
-                </div>
-              ) : (
-                <NoProductAvailable className="bg-white mt-0" />
+        
+        {/* 1. Header Section */}
+        <div className="mb-6 bg-white p-4 rounded-2xl border border-slate-100 shadow-xs">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="space-y-0.5">
+              <Title className="text-sm font-bold uppercase tracking-wider text-slate-400">
+                Showroom Inventory
+              </Title>
+              <h1 className="text-xl font-black text-slate-900 tracking-tight sm:text-2xl">
+                Find products that fit your needs
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {(selectedCategory !== null || selectedBrand !== null) && (
+                <button
+                  onClick={() => {
+                    setSelectedCategory(null);
+                    setSelectedBrand(null);
+                  }}
+                  className="text-xs font-semibold uppercase tracking-wider text-rose-600 hover:text-rose-700 bg-rose-50 px-3 py-2 rounded-xl transition-all"
+                >
+                  Reset Filters
+                </button>
               )}
+
+              <button
+                onClick={() => setIsMobileFilterOpen(true)}
+                className="flex md:hidden items-center gap-2 bg-slate-950 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition hover:bg-slate-800 shadow-sm"
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                Filters
+              </button>
             </div>
           </div>
+        </div>
+
+        {/* Main Workspace Layout */}
+        <div className="flex flex-col md:flex-row gap-6 items-start">
+          
+          {/* Mobile Drawer Overlay */}
+          <div
+            className={`fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-xs transition-opacity duration-300 md:hidden ${
+              isMobileFilterOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
+            onClick={() => setIsMobileFilterOpen(false)}
+          />
+
+          <aside
+            className={`fixed top-0 bottom-0 left-0 z-50 flex w-72 max-w-[80vw] flex-col bg-white p-6 shadow-2xl transition-transform duration-300 ease-in-out md:static md:z-0 md:w-64 md:max-w-none md:translate-x-0 md:p-0 md:bg-transparent md:shadow-none md:border-r border-slate-200/60 md:pr-4 ${
+              isMobileFilterOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
+            <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 md:hidden">
+              <span className="font-bold text-slate-900 text-base">Filter Options</span>
+              <button
+                onClick={() => setIsMobileFilterOpen(false)}
+                className="p-1.5 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-6 pr-1 scrollbar-hide md:max-h-[calc(100vh-180px)] md:sticky md:top-6">
+              <CategoryList
+                categories={categories}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={(cat) => {
+                  setSelectedCategory(cat);
+                  setIsMobileFilterOpen(false);
+                }}
+              />
+              <BrandList
+                brands={brands}
+                setSelectedBrand={(brand) => {
+                  setSelectedBrand(brand);
+                  setIsMobileFilterOpen(false);
+                }}
+                selectedBrand={selectedBrand}
+              />
+              {/* FIXED: Removed PriceList block selector element from layout tree */}
+            </div>
+          </aside>
+
+          {/* Product Catalog Grid View Workspace */}
+          <div className="flex-1 w-full">
+            {loading ? (
+              <div className="p-20 flex flex-col gap-3 items-center justify-center bg-white rounded-3xl border border-slate-100 shadow-xs min-h-[400px]">
+                <Loader2 className="w-9 h-9 text-slate-900 animate-spin" />
+                <p className="font-bold tracking-tight text-slate-800 text-base">
+                  Fetching current catalog availability...
+                </p>
+              </div>
+            ) : products?.length > 0 ? (
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+                {products?.map((product) => (
+                  <ProductCard key={product?._id} product={product as any} />
+                ))}
+              </div>
+            ) : (
+              <NoProductAvailable className="bg-white mt-0 rounded-3xl border border-slate-100 shadow-xs" />
+            )}
+          </div>
+
         </div>
       </Container>
     </div>
