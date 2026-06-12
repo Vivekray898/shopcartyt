@@ -13,9 +13,14 @@ import { urlFor } from "@/sanity/lib/image";
 import PriceFormatter from "./PriceFormatter";
 import AddToCartButton from "./AddToCartButton";
 
-const WishListProducts = () => {
+interface Props {
+  catalogueMode?: boolean;
+}
+
+const WishListProducts = ({ catalogueMode }: Props) => {
   const [visibleProducts, setVisibleProducts] = useState(7);
   const { favoriteProduct, removeFromFavorite, resetFavorite } = useStore();
+  
   const loadMore = () => {
     setVisibleProducts((prev) => Math.min(prev + 5, favoriteProduct.length));
   };
@@ -86,17 +91,20 @@ const WishListProducts = () => {
                         )}
                       </td>
                       <td className="p-2 capitalize hidden md:table-cell font-semibold text-slate-800">
-                        {/* FIXED: Pulls the title name cleanly instead of trying to pass down the whole reference row object */}
                         {(product?.variant as any)?.title || "Standard Item"}
                       </td>
                       <td
                         className={`p-2 w-24 ${
-                          (product?.stock as number) > 0
+                          catalogueMode 
+                            ? "text-slate-600"
+                            : (product?.stock as number) > 0
                             ? "text-green-600"
                             : "text-red-600"
                         } font-medium text-sm hidden md:table-cell`}
                       >
-                        {(product?.stock as number) > 0
+                        {catalogueMode
+                          ? "Catalogue"
+                          : (product?.stock as number) > 0
                           ? "In Stock"
                           : "Out of Stock"}
                       </td>
@@ -104,7 +112,15 @@ const WishListProducts = () => {
                         <PriceFormatter amount={product?.price ?? undefined} />
                       </td>
                       <td className="p-2">
-                        <AddToCartButton product={product as any} className="w-full" />
+                        {catalogueMode ? (
+                           <Button asChild className="w-full" variant="outline">
+                             <Link href={`/product/${product?.slug?.current}`}>
+                               View Product
+                             </Link>
+                           </Button>
+                        ) : (
+                          <AddToCartButton product={product as any} className="w-full" />
+                        )}
                       </td>
                     </tr>
                   ))}
