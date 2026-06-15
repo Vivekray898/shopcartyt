@@ -15,15 +15,15 @@ const Home = async () => {
   const productTypesQuery = `*[_type == "productVariant"] | order(title asc) { _id, title }`;
   const productTypes = await client.fetch(productTypesQuery);
 
-  // FETCH ACTIVE BANNER
-  const bannerQuery = `*[_type == "banner"] | order(_createdAt desc)[0]`;
+  // 🚀 FIXED: Ordered by priority score descending first, then by registration date
+  const bannerQuery = `*[_type == "banner"] | order(priority desc, _createdAt desc)[0]`;
   const activeBanner = await client.fetch(bannerQuery);
 
   return (
     <Container className="bg-shop-light-pink">
       <HomeBanner banner={activeBanner} />
       
-      {/* FIXED: Added a structural limit constraint helper prop to shorten the layout list */}
+      {/* Structural limit constraint helper prop to shorten the layout list */}
       <ProductGrid initialTabs={productTypes} limit={8} />
       
       <HomeCategories categories={categories} />

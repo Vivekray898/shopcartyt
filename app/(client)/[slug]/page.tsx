@@ -47,7 +47,10 @@ export default async function DynamicNoCodePage({ params }: Props) {
                 banner={{
                   _id: index.toString(),
                   headline: block.heading,
-                  bannerImage: block.image,
+                  // 🚀 FIXED: Changed from 'bannerImage' to use the new type properties 
+                  // desktopImage handles the core asset, and mobileImage falls back gracefully
+                  desktopImage: block.image,
+                  mobileImage: block.image, 
                   targetUrl: block.ctaLink || "/shop",
                   buttonText: block.ctaText,
                 }} 
