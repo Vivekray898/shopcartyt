@@ -42,6 +42,18 @@ const Shop = ({
     setIsMobileFilterOpen(false);
   }, [selectedCategory, selectedBrand]);
 
+  // 🚀 FIXED: Prevent body scroll when mobile filter is open
+  useEffect(() => {
+    if (isMobileFilterOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileFilterOpen]);
+
   const fetchProducts = async () => {
     setLoading(true);
     try {
@@ -126,12 +138,14 @@ const Shop = ({
             onClick={() => setIsMobileFilterOpen(false)}
           />
 
+          {/* 🚀 FIXED: Sidebar with proper overflow handling */}
           <aside
-            className={`fixed top-0 bottom-0 left-0 z-50 flex w-72 max-w-[80vw] flex-col bg-white p-6 shadow-2xl transition-transform duration-300 ease-in-out md:static md:z-0 md:w-64 md:max-w-none md:translate-x-0 md:p-0 md:bg-transparent md:shadow-none md:border-r border-slate-200/60 md:pr-4 ${
+            className={`fixed top-0 bottom-0 left-0 z-50 flex w-72 max-w-[80vw] flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out md:static md:z-0 md:w-64 md:max-w-none md:translate-x-0 md:bg-transparent md:shadow-none md:border-r border-slate-200/60 md:pr-4 ${
               isMobileFilterOpen ? "translate-x-0" : "-translate-x-full"
             }`}
           >
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 md:hidden">
+            {/* Header - always visible, never scrolls */}
+            <div className="flex items-center justify-between p-6 pb-4 border-b border-slate-100 md:hidden flex-shrink-0">
               <span className="font-bold text-slate-900 text-base">Filter Options</span>
               <button
                 onClick={() => setIsMobileFilterOpen(false)}
@@ -141,20 +155,20 @@ const Shop = ({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-6 pr-1 scrollbar-hide md:max-h-[calc(100vh-180px)] md:sticky md:top-6">
-              <CategoryList
-                categories={categories}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={(cat) => {
-                  setSelectedCategory(cat);
-                }}
-              />
-              <BrandList
-                brands={brands}
-                // 🚀 FIXED: Passing the raw state dispatch handler matches the type definition inside BrandList.tsx perfectly
-                setSelectedBrand={setSelectedBrand}
-                selectedBrand={selectedBrand}
-              />
+            {/* 🚀 FIXED: Scrollable content area */}
+            <div className="flex-1 overflow-y-auto p-6 pt-0 md:p-0 md:pt-0 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent">
+              <div className="space-y-6 md:sticky md:top-6">
+                <CategoryList
+                  categories={categories}
+                  selectedCategory={selectedCategory}
+                  setSelectedCategory={setSelectedCategory}
+                />
+                <BrandList
+                  brands={brands}
+                  setSelectedBrand={setSelectedBrand}
+                  selectedBrand={selectedBrand}
+                />
+              </div>
             </div>
           </aside>
 

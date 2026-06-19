@@ -1,45 +1,89 @@
+"use client";
+
 import React from "react";
 import Title from "./Title";
 import { Category } from "@/sanity.types";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
-const HomeCategories = ({ categories }: { categories: Category[] }) => {
+interface ExtendedCategory extends Category {
+  productCount?: number;
+}
+
+const HomeCategories = ({ categories }: { categories: ExtendedCategory[] }) => {
+  // 🚀 SORTING LOGIC: Prioritize categories with active items first
+  const sortedCategories = [...(categories || [])].sort((a, b) => {
+    const countA = (a as any)?.productCount ?? 0;
+    const countB = (b as any)?.productCount ?? 0;
+    return countB - countA;
+  });
+
   return (
-    <div className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-5 lg:p-7 rounded-2xl shadow-xs">
-      <Title className="border-b pb-3">Popular Categories</Title>
-      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {categories?.map((category) => {
-          // FIXED: Extracted productCount using an unsafe type assert fallback to prevent build halts
+    // Cleaned up mobile padding classes slightly (p-4 on mobile, p-6+ on desktop)
+    <div className="bg-white my-6 md:my-16 p-4 md:p-6 lg:p-8 rounded-3xl border border-slate-100 shadow-xs">
+      
+      {/* Header Container Layout Matrix */}
+      <div className="flex items-center justify-between border-b pb-4 mb-5">
+        <Title className="text-base md:text-xl font-black text-slate-900 tracking-tight">
+          Browse Popular Categories
+        </Title>
+        <span className="text-[10px] md:text-xs font-bold text-shop_dark_green bg-emerald-50 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full uppercase tracking-wider whitespace-nowrap">
+          Live Inventory
+        </span>
+      </div>
+
+      {/* 🎨 MOBILE-OPTIMIZED CONTAINER VIEWPORT LAYER 
+          Mobile: Single horizontal slider stream with hidden native scrollbars
+          Desktop (sm+): Seamless layout conversion back to your responsive card grids */}
+      <div className="flex overflow-x-auto pb-3 gap-4 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 sm:gap-6 sm:pb-0">
+        {sortedCategories?.map((category) => {
           const count = (category as any)?.productCount ?? 0;
+          const hasItems = count > 0;
 
           return (
-            <div
+            <Link
               key={category?._id}
-              className="bg-shop_light_bg p-5 flex items-center gap-3 group rounded-xl border border-transparent transition-all duration-300 hover:border-shop_orange/20"
+              href={`/category/${category?.slug?.current}`}
+              // 🚀 MOBILE STRUCTURAL CHANGE: Added minimum width and snap alignment tracking on mobile
+              className="group flex flex-col items-center text-center p-3 sm:p-4 bg-slate-50/50 rounded-2xl border border-slate-100/60 hover:bg-white hover:shadow-md hover:border-transparent transition-all duration-300 ease-out cursor-pointer min-w-[110px] max-w-[120px] sm:min-w-0 sm:max-w-none snap-start flex-shrink-0"
             >
-              {category?.image && (
-                <div className="overflow-hidden border border-shop_orange/30 rounded-lg bg-white hover:border-shop_orange hoverEffect w-20 h-20 p-1 flex items-center justify-center">
-                  <Link href={`/category/${category?.slug?.current}`} className="w-full h-full block relative">
-                    <Image
-                      src={urlFor(category?.image).url()}
-                      alt={category?.title || "categoryImage"}
-                      width={120}
-                      height={120}
-                      className="w-full h-full object-contain group-hover:scale-110 hoverEffect"
-                    />
-                  </Link>
-                </div>
-              )}
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-slate-800">{category?.title}</h3>
-                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  <span className="font-black text-shop_dark_green">{`(${count})`}</span>{" "}
-                  Items Available
+              {/* 🖼️ Circular Image Canvas Section with Scale Hover Effects */}
+              <div className="relative w-16 h-16 md:w-24 md:h-24 rounded-full bg-white border border-slate-100 flex items-center justify-center p-2.5 shadow-2xs group-hover:border-shop_dark_green/30 transition-colors duration-300 overflow-hidden">
+                {category?.image ? (
+                  <Image
+                    src={urlFor(category.image).url()}
+                    alt={category?.title || "categoryImage"}
+                    fill
+                    sizes="(max-width: 768px) 64px, 96px"
+                    className="object-contain p-2 group-hover:scale-110 transition-transform duration-500 ease-out"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-[10px]">
+                    No Image
+                  </div>
+                )}
+              </div>
+
+              {/* 📝 Content Metadata Information Rows */}
+              <div className="mt-2.5 space-y-0.5 w-full">
+                {/* 🚀 MOBILE FIX: Relaxed truncation behavior slightly for horizontal cards layout arrays */}
+                <h3 className="text-[11px] md:text-sm font-bold text-slate-700 line-clamp-1 group-hover:text-shop_dark_green transition-colors px-0.5">
+                  {category?.title}
+                </h3>
+                
+                <p className={`text-[9px] md:text-xs font-semibold uppercase tracking-wide inline-flex items-center gap-0.5 ${
+                  hasItems ? "text-slate-400" : "text-slate-300"
+                }`}>
+                  <span className={hasItems ? "font-black text-shop_dark_green" : "font-semibold"}>
+                    {count}
+                  </span>{" "}
+                  {count === 1 ? "Item" : "Items"}
+                  <ChevronRight className="w-2.5 h-2.5 hidden sm:block opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-shop_dark_green ml-0.5" />
                 </p>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
