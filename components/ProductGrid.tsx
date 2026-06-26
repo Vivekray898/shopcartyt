@@ -11,29 +11,31 @@ import HomeTabbar from "./HomeTabbar";
 import { Product } from "@/sanity.types";
 import Link from "next/link";
 
-interface TabItem {
-  _id: string;
-  title: string;
-}
-
 interface Props {
-  initialTabs: TabItem[];
-  limit?: number; // ADDED: Safe type primitive parameter mapping
+  // 🚀 FIXED: Now seamlessly accepts a string array input directly from your optimized query logic
+  initialTabs: string[]; 
+  limit?: number; 
 }
 
 const ProductGrid = ({ initialTabs, limit }: Props) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   
-  // Sets the default active tab state to the first dynamic Sanity document title
-  const [selectedTab, setSelectedTab] = useState(initialTabs[0]?.title || "");
+  // Sets default fallback safely to the first element string ("Featured")
+  const [selectedTab, setSelectedTab] = useState<string>(initialTabs[0] || "Featured");
 
   useEffect(() => {
     if (!selectedTab) return;
 
-    // FIXED: Appends a dynamic GROQ slice constraint [0...$limit] if defined, otherwise fetches all
     const sliceQuery = limit ? `[0...$limit]` : "";
-    const query = `*[_type == "product" && variant->title == $variantTitle] | order(name asc) ${sliceQuery} {
+    
+    // 🚀 FIXED: Dynamic conditional filter parameters. 
+    // If 'Featured' is chosen, check isFeatured tag status. Else, link to specific variant titles.
+    const query = `*[_type == "product" && (
+      ($variantTitle == "Featured" && isFeatured == true)
+      ||
+      (variant->title == $variantTitle)
+    )] | order(_createdAt desc) ${sliceQuery} {
       ...,
       "brand": brand->{brandName},
       "variant": variant->{title}
@@ -48,7 +50,7 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
         });
         setProducts(response);
       } catch (error) {
-        console.log("Product fetching Error", error);
+        console.log("❌ Product fetching Error", error);
       } finally {
         setLoading(false);
       }
@@ -56,16 +58,13 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
     fetchData();
   }, [selectedTab, limit]);
 
-  // Map dynamic tabs for the child HomeTabbar component mapping format
-  const formattedTabs = initialTabs.map(tab => tab.title);
-
   return (
     <Container className="flex flex-col lg:px-0 my-10">
       {/* Dynamic Tabbar Sync Engine */}
       <HomeTabbar 
         selectedTab={selectedTab} 
         onTabSelect={setSelectedTab} 
-        tabs={formattedTabs}
+        tabs={initialTabs} // 🚀 FIXED: Drops your clean string array directly inside the component props
       />
       
       {loading ? (
@@ -77,7 +76,6 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
         </div>
       ) : products?.length ? (
         <>
-          {/* FIXED GRID BREAKPOINTS: Matches your clean 2-column mobile structure */}
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mt-10">
             <AnimatePresence mode="popLayout">
               {products?.map((product) => (
@@ -95,7 +93,6 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
             </AnimatePresence>
           </div>
 
-          {/* FIXED: Dynamic "View All" redirection button shown only when a display limit exists */}
           {limit && products.length >= limit && (
             <div className="mt-10 flex justify-center">
               <Link

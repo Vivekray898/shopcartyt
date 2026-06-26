@@ -154,6 +154,15 @@ const OTHERS_BLOG_QUERY = defineQuery(`
   }
 `);
 
+// Add this definition string at the bottom of sanity/queries/query.ts
+const HOME_TAB_BAR_QUERY = defineQuery(`
+  *[_type == "productVariant"] {
+    title,
+    "priority": coalesce(orderPriority, 0),
+    "latestProductDate": *[_type == "product" && references(^._id)] | order(_createdAt desc)[0]._createdAt
+  } | order(priority desc, latestProductDate desc)[0...15].title
+`);
+
 export {
   BRANDS_QUERY,
   LATEST_BLOG_QUERY,
@@ -168,4 +177,5 @@ export {
   SITE_SETTINGS_QUERY,
   HEADER_SETTINGS_QUERY,
   FOOTER_SETTINGS_QUERY,
+  HOME_TAB_BAR_QUERY, // Added to exports
 };

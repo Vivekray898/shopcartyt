@@ -13,6 +13,7 @@ import {
   SITE_SETTINGS_QUERY,
   HEADER_SETTINGS_QUERY,
   FOOTER_SETTINGS_QUERY,
+  HOME_TAB_BAR_QUERY, // A. Import your new query definition from query.ts
 } from "./query";
 
 const getCategories = async (quantity?: number) => {
@@ -53,6 +54,7 @@ const getLatestBlogs = async () => {
     return [];
   }
 };
+
 const getDealProducts = async () => {
   try {
     const data = await client.fetch(DEAL_PRODUCTS);
@@ -62,6 +64,7 @@ const getDealProducts = async () => {
     return [];
   }
 };
+
 const getProductBySlug = async (slug: string) => {
   try {
     const product = await client.fetch(PRODUCT_BY_SLUG_QUERY, { slug });
@@ -71,6 +74,7 @@ const getProductBySlug = async (slug: string) => {
     return null;
   }
 };
+
 const getBrand = async (slug: string) => {
   try {
     const product = await client.fetch(BRAND_QUERY, { slug });
@@ -120,6 +124,7 @@ const getMyOrders = async (userId: string) => {
     return null;
   }
 };
+
 const getAllBlogs = async (quantity: number) => {
   try {
     const data = await client.fetch(GET_ALL_BLOG, { quantity });
@@ -139,6 +144,7 @@ const getSingleBlog = async (slug: string) => {
     return [];
   }
 };
+
 const getBlogCategories = async () => {
   try {
     const data = await client.fetch(BLOG_CATEGORIES);
@@ -158,10 +164,25 @@ const getOthersBlog = async (slug: string, quantity: number) => {
     return [];
   }
 };
-// Add these to the export list at the very bottom of your queries index wrapper file:
+
+// B. Add the type-safe fetcher function inside your orchestration list
+const getHomeTabsData = async (): Promise<string[]> => {
+  try {
+    const variantTitles: string[] = await client.fetch(HOME_TAB_BAR_QUERY);
+    
+    // 🚀 Inject "Featured" cleanly at array element position zero
+    return ["Featured", ...(variantTitles || [])];
+  } catch (error) {
+    console.error("❌ Failed to resolve home tab navigation categories:", error);
+    return ["Featured"]; // Fallback safe gracefully if DB is bootstrapping
+  }
+};
+
+// C. Export all functions including the new one
 export {
   getCategories,
   getAllBrands,
+  getHomeTabsData, // 👈 Added here
   getLatestBlogs,
   getDealProducts,
   getProductBySlug,
