@@ -9,12 +9,12 @@ interface BannerData {
   _id: string;
   isFullBleedGraphic?: boolean;
   headline?: string;
-  desktopImage?: any; // UPDATED
-  mobileImage?: any;  // ADDED
+  desktopImage?: any;
+  mobileImage?: any;
   targetUrl: string;
   buttonText?: string;
   backgroundColor?: string;
-  priority?: number;  // ADDED
+  priority?: number;
 }
 
 interface Props {
@@ -22,13 +22,11 @@ interface Props {
 }
 
 const HomeBanner = ({ banner }: Props) => {
-  // Safe default fallback if no valid asset mapping properties exist
   if (!banner || !banner.desktopImage) return null;
 
   const targetLink = banner.targetUrl || "/shop";
   const hasCustomBg = banner.backgroundColor && banner.backgroundColor.startsWith("#");
   
-  // Use mobileImage if available, otherwise gracefully fall back to the desktop asset canvas
   const mobileAssetSrc = banner.mobileImage ? urlFor(banner.mobileImage).url() : urlFor(banner.desktopImage).url();
   const desktopAssetSrc = urlFor(banner.desktopImage).url();
 
@@ -36,8 +34,8 @@ const HomeBanner = ({ banner }: Props) => {
   if (banner.isFullBleedGraphic) {
     return (
       <Link href={targetLink} className="block group relative w-full overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-md">
-        {/* Mobile Layout Frame Structure: Displays a portrait/square box on phone screens */}
-        <div className="relative block md:hidden w-full h-[360px] sm:h-[420px]">
+        {/* Mobile Layout: Responsive aspect ratio (e.g., 750/1000 portrait or 4/3) */}
+        <div className="relative block md:hidden w-full aspect-[750/1000]">
           <Image
             src={mobileAssetSrc}
             alt={banner.headline || "Promotional Banner"}
@@ -47,13 +45,14 @@ const HomeBanner = ({ banner }: Props) => {
           />
         </div>
 
-        {/* Desktop Layout Frame Structure: Displays wide aspect on laptops/monitors */}
-        <div className="relative hidden md:block w-full h-[400px] lg:h-[450px]">
+        {/* Desktop Layout: Exact matching 1920/540 aspect ratio */}
+        <div className="relative hidden md:block w-full aspect-[1920/540]">
           <Image
             src={desktopAssetSrc}
             alt={banner.headline || "Promotional Banner"}
             fill
             priority
+            sizes="100vw"
             className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.02]"
           />
         </div>
