@@ -1,3 +1,4 @@
+// hooks/useSiteSettings.ts
 import { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
 
@@ -22,6 +23,17 @@ const FOOTER_SETTINGS_QUERY = `*[_type == 'footerSettings'][0]{
     subtitle,
     icon
   },
+  storeLocations[]{
+    name,
+    address,
+    city,
+    phone,
+    email,
+    hours,
+    embedUrl,
+    mapsUrl,
+    featured
+  },
   quickLinks[]{
     title,
     href
@@ -36,6 +48,8 @@ const FOOTER_SETTINGS_QUERY = `*[_type == 'footerSettings'][0]{
   },
   newsletterText
 }`;
+
+// ============ TYPES ============
 
 export type HeaderLink = {
   title?: string;
@@ -69,16 +83,38 @@ export type FooterSocialLink = {
   url?: string;
 };
 
+export type StoreLocation = {
+  name?: string;
+  address?: string;
+  city?: string;
+  phone?: string;
+  email?: string;
+  hours?: string;
+  embedUrl?: string;
+  mapsUrl?: string;
+  featured?: boolean;
+};
+
 export type FooterSettings = {
   logo?: unknown;
   tagline?: string;
   footerBottomText?: string;
   contactItems?: FooterContactItem[];
+  storeLocations?: StoreLocation[];
   quickLinks?: FooterLink[];
   categories?: FooterLink[];
   socialLinks?: FooterSocialLink[];
   newsletterText?: string;
 };
+
+export type SiteSettingsState = {
+  headerSettings: HeaderSettings;
+  footerSettings: FooterSettings;
+  isLoading: boolean;
+  error: Error | null;
+};
+
+// ============ DEFAULTS ============
 
 export const defaultHeaderSettings: HeaderSettings = {
   navigationLinks: [
@@ -99,6 +135,30 @@ export const defaultFooterSettings: FooterSettings = {
     { title: "Call Us", subtitle: "+12 958 648 597", icon: "phone" },
     { title: "Working Hours", subtitle: "Mon - Sat: 10:00 AM - 7:00 PM", icon: "clock" },
     { title: "Email Us", subtitle: "Shopcart@gmail.com", icon: "mail" },
+  ],
+  storeLocations: [
+    {
+      name: "Fundgrube Aßweiler",
+      address: "Blumen, Gartencenter",
+      city: "Aßweiler, Germany",
+      phone: "+4917632853448",
+      email: "assweiler@fundgrube.com",
+      hours: "Mon-Sat: 9:00 - 20:00",
+      embedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2606.322878516748!2d7.1800750767101915!3d49.2134034756573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4795cdce6b678f33%3A0x302e33a329f835f9!2sFundgrube%20Sonderpostenmarkt%2C%20Blumen%2C%20Gartencenter%2C%20A%C3%9Fweiler!5e0!3m2!1sen!2sin!4v1785411348624!5m2!1sen!2sin",
+      mapsUrl: "https://www.google.com/maps?q=Fundgrube+Sonderpostenmarkt+A%C3%9Fweiler",
+      featured: true,
+    },
+    {
+      name: "Best Preis Blieskastel",
+      address: "Textil, Schreibware, Baumarkt",
+      city: "Blieskastel, Germany",
+      phone: "+4917632853448",
+      email: "blieskastel@fundgrube.com",
+      hours: "Mon-Sat: 9:00 - 20:00",
+      embedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2604.5416189021976!2d7.363204976711802!3d49.24717927326737!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4795d123d15c4abb%3A0xad008301e167ed7!2sBest%20Preis%20Textil%20Schreibware%20Baumarkt%20Artikel!5e0!3m2!1sen!2sin!4v1785411367261!5m2!1sen!2sin",
+      mapsUrl: "https://www.google.com/maps?q=Best+Preis+Textil+Schreibware+Baumarkt+Blieskastel",
+      featured: true,
+    },
   ],
   quickLinks: [
     { title: "About us", href: "/about" },
@@ -128,15 +188,12 @@ export const defaultFooterSettings: FooterSettings = {
     "Subscribe to our newsletter to receive updates and exclusive offers.",
 };
 
-type SiteSettingsState = {
-  headerSettings: HeaderSettings;
-  footerSettings: FooterSettings;
-};
+// ============ CACHE ============
 
-let cachedSiteSettings: SiteSettingsState | null = null;
-let siteSettingsPromise: Promise<SiteSettingsState> | null = null;
+let cachedSiteSettings: Omit<SiteSettingsState, 'isLoading' | 'error'> | null = null;
+let siteSettingsPromise: Promise<Omit<SiteSettingsState, 'isLoading' | 'error'>> | null = null;
 
-async function fetchSiteSettings(): Promise<SiteSettingsState> {
+async function fetchSiteSettings(): Promise<Omit<SiteSettingsState, 'isLoading' | 'error'>> {
   if (cachedSiteSettings) {
     return cachedSiteSettings;
   }
@@ -147,7 +204,7 @@ async function fetchSiteSettings(): Promise<SiteSettingsState> {
       client.fetch(FOOTER_SETTINGS_QUERY),
     ])
       .then(([headerSettings, footerSettings]) => {
-        const result: SiteSettingsState = {
+        const result = {
           headerSettings: headerSettings ?? defaultHeaderSettings,
           footerSettings: footerSettings ?? defaultFooterSettings,
         };
@@ -169,28 +226,107 @@ async function fetchSiteSettings(): Promise<SiteSettingsState> {
   return siteSettingsPromise;
 }
 
-export function useSiteSettings() {
-  const [siteSettings, setSiteSettings] = useState<SiteSettingsState>({
+// ============ HOOK ============
+
+export function useSiteSettings(): SiteSettingsState & {
+  headerSettings: HeaderSettings;
+  footerSettings: FooterSettings;
+  isLoading: boolean;
+  error: Error | null;
+} {
+  const [state, setState] = useState<SiteSettingsState>({
     headerSettings: defaultHeaderSettings,
     footerSettings: defaultFooterSettings,
+    isLoading: true,
+    error: null,
   });
 
   useEffect(() => {
     let isMounted = true;
 
-    fetchSiteSettings().then((result) => {
-      if (isMounted) {
-        setSiteSettings(result);
-      }
-    });
+    fetchSiteSettings()
+      .then((result) => {
+        if (isMounted) {
+          setState({
+            ...result,
+            isLoading: false,
+            error: null,
+          });
+        }
+      })
+      .catch((error) => {
+        if (isMounted) {
+          setState({
+            headerSettings: defaultHeaderSettings,
+            footerSettings: defaultFooterSettings,
+            isLoading: false,
+            error: error instanceof Error ? error : new Error('Failed to fetch settings'),
+          });
+        }
+      });
 
     return () => {
       isMounted = false;
     };
   }, []);
 
-  return siteSettings;
+  return state;
 }
 
-// This hook is intended for client-side use only and should not import
-// server-only helpers that require SANITY_API_READ_TOKEN.
+// ============ INDIVIDUAL HOOKS FOR BETTER DX ============
+
+export function useHeaderSettings() {
+  const { headerSettings, isLoading, error } = useSiteSettings();
+  return { headerSettings, isLoading, error };
+}
+
+export function useFooterSettings() {
+  const { footerSettings, isLoading, error } = useSiteSettings();
+  return { footerSettings, isLoading, error };
+}
+
+export function useStoreLocations() {
+  const { footerSettings, isLoading, error } = useSiteSettings();
+  return { 
+    storeLocations: footerSettings.storeLocations || [], 
+    isLoading, 
+    error 
+  };
+}
+
+export function useContactItems() {
+  const { footerSettings, isLoading, error } = useSiteSettings();
+  return { 
+    contactItems: footerSettings.contactItems || [], 
+    isLoading, 
+    error 
+  };
+}
+
+export function useSocialLinks() {
+  const { footerSettings, isLoading, error } = useSiteSettings();
+  return { 
+    socialLinks: footerSettings.socialLinks || [], 
+    isLoading, 
+    error 
+  };
+}
+
+// ============ TYPE GUARDS ============
+
+export function hasStoreLocations(footerSettings: FooterSettings): boolean {
+  return !!(footerSettings.storeLocations && footerSettings.storeLocations.length > 0);
+}
+
+export function getFeaturedLocations(footerSettings: FooterSettings): StoreLocation[] {
+  if (!footerSettings.storeLocations) return [];
+  return footerSettings.storeLocations.filter(loc => loc.featured === true);
+}
+
+export function getPrimaryLocation(footerSettings: FooterSettings): StoreLocation | undefined {
+  if (!footerSettings.storeLocations || footerSettings.storeLocations.length === 0) {
+    return undefined;
+  }
+  const featured = getFeaturedLocations(footerSettings);
+  return featured.length > 0 ? featured[0] : footerSettings.storeLocations[0];
+}

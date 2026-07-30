@@ -1,3 +1,4 @@
+// components/Footer.tsx
 "use client";
 import React from "react";
 import Image from "next/image";
@@ -11,7 +12,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { urlFor } from "@/sanity/lib/image";
-import FloatingWhatsApp from "./FloatingWhatsApp"; // 🚀 IMPORT THE NEW COMPONENT
+import FloatingWhatsApp from "./FloatingWhatsApp";
 
 const Footer = () => {
   const { footerSettings } = useSiteSettings();
@@ -20,6 +21,7 @@ const Footer = () => {
   
   const quickLinks = footerSettings?.quickLinks ?? [];
   const categories = footerSettings?.categories ?? [];
+  const storeLocations = footerSettings?.storeLocations ?? [];
   
   const newsletterText = footerSettings?.newsletterText || "Subscribe to our newsletter for exclusive updates.";
   const socialLinks = footerSettings?.socialLinks;
@@ -34,7 +36,11 @@ const Footer = () => {
     <footer className="bg-white border-t relative">
       <Container>
         {/* Passing down active synchronization state controls */}
-        <FooterTop contactItems={contactItems} isLoading={isCurrentlyLoading} />
+        <FooterTop 
+          contactItems={contactItems} 
+          storeLocations={storeLocations}
+          isLoading={isCurrentlyLoading} 
+        />
         
         <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">

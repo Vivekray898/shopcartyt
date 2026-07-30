@@ -1,3 +1,4 @@
+// sanity/schemaTypes/footerSettingsType.ts
 import { DocumentIcon } from "@sanity/icons";
 import { defineField, defineType } from "sanity";
 
@@ -23,6 +24,48 @@ export const footerSettingsType = defineType({
             select: {
               title: "title",
               subtitle: "subtitle",
+            },
+          },
+        },
+      ],
+    }),
+    defineField({
+      name: "storeLocations",
+      title: "Store Locations",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({ name: "name", title: "Store Name", type: "string" }),
+            defineField({ name: "address", title: "Address", type: "string" }),
+            defineField({ name: "city", title: "City", type: "string" }),
+            defineField({ name: "phone", title: "Phone", type: "string" }),
+            defineField({ name: "email", title: "Email", type: "string" }),
+            defineField({ name: "hours", title: "Business Hours", type: "string" }),
+            defineField({ 
+              name: "embedUrl", 
+              title: "Google Maps Embed URL", 
+              type: "url",
+              description: "Get this from Google Maps > Share > Embed map"
+            }),
+            defineField({ 
+              name: "mapsUrl", 
+              title: "Google Maps Directions URL", 
+              type: "url",
+              description: "Get this from Google Maps > Share > Copy link"
+            }),
+            defineField({ 
+              name: "featured", 
+              title: "Featured Location", 
+              type: "boolean",
+              description: "Show this location prominently"
+            }),
+          ],
+          preview: {
+            select: {
+              title: "name",
+              subtitle: "address",
             },
           },
         },
