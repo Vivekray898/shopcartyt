@@ -13,6 +13,7 @@ import { headerSettingsType } from "./headerSettingsType";
 import { footerSettingsType } from "./footerSettingsType";
 import { productVariantType } from "./productVariant"; 
 import { bannerType } from "./bannerType"; 
+import contactSubmission from "./contactSubmission"; // ADD THIS IMPORT
 
 // 1. IMPORT NO-CODE PAGE BUILDER SCHEMAS
 import { pageType } from "./pageType";
@@ -47,5 +48,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
 
     // Utility
     blockContentType,
+
+    // Contact Form Submissions - ADD THIS LINE
+    contactSubmission,
   ],
 };
