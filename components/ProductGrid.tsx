@@ -19,14 +19,16 @@ interface Props {
 const ProductGrid = ({ initialTabs, limit }: Props) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-  const [availableTabs, setAvailableTabs] = useState<string[]>(initialTabs);
+  const [isCheckingTabs, setIsCheckingTabs] = useState(true); // New loading state for tab checking
+  const [availableTabs, setAvailableTabs] = useState<string[]>([]); // Start empty instead of initialTabs
   
   // Sets default fallback safely to the first element string ("Featured")
-  const [selectedTab, setSelectedTab] = useState<string>(initialTabs[0] || "Featured");
+  const [selectedTab, setSelectedTab] = useState<string>("");
 
   // Fetch products for all tabs to determine which have products
   useEffect(() => {
     const fetchAllTabsData = async () => {
+      setIsCheckingTabs(true);
       const tabsWithProducts: string[] = [];
       
       for (const tab of initialTabs) {
@@ -57,15 +59,20 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
       
       setAvailableTabs(tabsWithProducts);
       
-      // If current selected tab has no products, switch to first available tab
-      if (!tabsWithProducts.includes(selectedTab) && tabsWithProducts.length > 0) {
+      // Set the first available tab as selected, or empty string if none
+      if (tabsWithProducts.length > 0) {
         setSelectedTab(tabsWithProducts[0]);
+      } else {
+        setSelectedTab("");
       }
+      
+      setIsCheckingTabs(false);
     };
 
     fetchAllTabsData();
   }, [initialTabs, limit]);
 
+  // Fetch products for the selected tab
   useEffect(() => {
     if (!selectedTab) return;
 
@@ -97,6 +104,20 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
     };
     fetchData();
   }, [selectedTab, limit]);
+
+  // Show loading while checking tabs
+  if (isCheckingTabs) {
+    return (
+      <Container className="flex flex-col lg:px-0 my-10">
+        <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-gray-100 rounded-lg w-full mt-10">
+          <motion.div className="flex items-center space-x-2 text-slate-900">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            <span>Loading available products...</span>
+          </motion.div>
+        </div>
+      </Container>
+    );
+  }
 
   // If no tabs have products, show a message
   if (availableTabs.length === 0 && !loading) {
