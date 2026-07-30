@@ -121,7 +121,7 @@ const ContactPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle form submission
+  // Handle form submission - Updated to use API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -133,12 +133,26 @@ const ContactPage = () => {
     setSubmitStatus('idle');
 
     try {
-      // Simulate API call - Replace with actual API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      
-      // Mock successful submission
+      // Send data to your API endpoint
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit form');
+      }
+
+      // Success
       setSubmitStatus('success');
       setSubmitMessage('Thank you for your message! We will get back to you soon.');
+      
+      // Reset form
       setFormData({
         name: '',
         email: '',
@@ -146,7 +160,9 @@ const ContactPage = () => {
         subject: '',
         message: ''
       });
+      
     } catch (error) {
+      console.error('Form submission error:', error);
       setSubmitStatus('error');
       setSubmitMessage('Something went wrong. Please try again later.');
     } finally {
