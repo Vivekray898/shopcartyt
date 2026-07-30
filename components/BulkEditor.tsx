@@ -5,7 +5,6 @@ import {
   Loader2, Save, Trash2, RefreshCw, Search, 
   ChevronDown, Image as ImageIcon 
 } from "lucide-react";
-import { urlFor } from "@/sanity/lib/image";
 
 interface ProductRow {
   _id: string;
@@ -51,10 +50,9 @@ export default function WooCommerceBulkEditor() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // 🚀 FIXED GROQ QUERY: Fetching image asset URLs and correct reference IDs
       const [productData, brandData, categoryData] = await Promise.all([
         client.fetch(`
-          *[_type == "product"] | order(name asc) {
+          *[_type == "product" && !(_id in path('drafts.**'))] | order(name asc) {
             _id,
             name,
             "image": coalesce(images[0].asset->url, image.asset->url, null),
@@ -64,13 +62,35 @@ export default function WooCommerceBulkEditor() {
             "categoryRefs": categories[]._ref
           }
         `),
-        client.fetch(`*[_type == "brand"] | order(title asc) { _id, title }`),
-        client.fetch(`*[_type == "category"] | order(title asc) { _id, title }`),
+        client.fetch(`
+          *[_type == "brand" && !(_id in path('drafts.**'))] | order(title asc) { 
+            _id, 
+            title 
+          }
+        `),
+        client.fetch(`
+          *[_type == "category" && !(_id in path('drafts.**'))] | order(title asc) { 
+            _id, 
+            title 
+          }
+        `),
       ]);
 
+      // Deduplicate category dropdown options by title
+      const uniqueCategories = categoryData.filter(
+        (cat: ReferenceOption, index: number, self: ReferenceOption[]) =>
+          index === self.findIndex((c) => c.title.trim().toLowerCase() === cat.title.trim().toLowerCase())
+      );
+
+      // Deduplicate brand dropdown options by title
+      const uniqueBrands = brandData.filter(
+        (brand: ReferenceOption, index: number, self: ReferenceOption[]) =>
+          index === self.findIndex((b) => b.title.trim().toLowerCase() === brand.title.trim().toLowerCase())
+      );
+
       setProducts(productData);
-      setBrands(brandData);
-      setCategories(categoryData);
+      setBrands(uniqueBrands);
+      setCategories(uniqueCategories);
       setPendingChanges({});
       setSelectedIds([]);
     } catch (err) {

@@ -12,7 +12,6 @@ import { Product } from "@/sanity.types";
 import Link from "next/link";
 
 interface Props {
-  // 🚀 FIXED: Now seamlessly accepts a string array input directly from your optimized query logic
   initialTabs: string[]; 
   limit?: number; 
 }
@@ -20,17 +19,58 @@ interface Props {
 const ProductGrid = ({ initialTabs, limit }: Props) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
+  const [availableTabs, setAvailableTabs] = useState<string[]>(initialTabs);
   
   // Sets default fallback safely to the first element string ("Featured")
   const [selectedTab, setSelectedTab] = useState<string>(initialTabs[0] || "Featured");
+
+  // Fetch products for all tabs to determine which have products
+  useEffect(() => {
+    const fetchAllTabsData = async () => {
+      const tabsWithProducts: string[] = [];
+      
+      for (const tab of initialTabs) {
+        const sliceQuery = limit ? `[0...$limit]` : "";
+        const query = `*[_type == "product" && (
+          ($variantTitle == "Featured" && isFeatured == true)
+          ||
+          (variant->title == $variantTitle)
+        )] | order(_createdAt desc) ${sliceQuery} {
+          ...,
+          "brand": brand->{brandName},
+          "variant": variant->{title}
+        }`;
+
+        try {
+          const response = await client.fetch(query, { 
+            variantTitle: tab,
+            limit: limit ?? 100 
+          });
+          
+          if (response && response.length > 0) {
+            tabsWithProducts.push(tab);
+          }
+        } catch (error) {
+          console.log(`❌ Error fetching products for tab: ${tab}`, error);
+        }
+      }
+      
+      setAvailableTabs(tabsWithProducts);
+      
+      // If current selected tab has no products, switch to first available tab
+      if (!tabsWithProducts.includes(selectedTab) && tabsWithProducts.length > 0) {
+        setSelectedTab(tabsWithProducts[0]);
+      }
+    };
+
+    fetchAllTabsData();
+  }, [initialTabs, limit]);
 
   useEffect(() => {
     if (!selectedTab) return;
 
     const sliceQuery = limit ? `[0...$limit]` : "";
     
-    // 🚀 FIXED: Dynamic conditional filter parameters. 
-    // If 'Featured' is chosen, check isFeatured tag status. Else, link to specific variant titles.
     const query = `*[_type == "product" && (
       ($variantTitle == "Featured" && isFeatured == true)
       ||
@@ -58,14 +98,28 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
     fetchData();
   }, [selectedTab, limit]);
 
+  // If no tabs have products, show a message
+  if (availableTabs.length === 0 && !loading) {
+    return (
+      <Container className="flex flex-col lg:px-0 my-10">
+        <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-gray-100 rounded-lg w-full mt-10">
+          <p className="text-lg font-medium text-gray-600">No products available at the moment</p>
+          <p className="text-sm text-gray-500">Please check back later</p>
+        </div>
+      </Container>
+    );
+  }
+
   return (
     <Container className="flex flex-col lg:px-0 my-10">
-      {/* Dynamic Tabbar Sync Engine */}
-      <HomeTabbar 
-        selectedTab={selectedTab} 
-        onTabSelect={setSelectedTab} 
-        tabs={initialTabs} // 🚀 FIXED: Drops your clean string array directly inside the component props
-      />
+      {/* Only show tabbar if there are available tabs */}
+      {availableTabs.length > 0 && (
+        <HomeTabbar 
+          selectedTab={selectedTab} 
+          onTabSelect={setSelectedTab} 
+          tabs={availableTabs} // Pass only tabs that have products
+        />
+      )}
       
       {loading ? (
         <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-gray-100 rounded-lg w-full mt-10">
