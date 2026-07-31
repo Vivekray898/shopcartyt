@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
-import Title from "@/components/Title"; // FIXED PATH ALIAS
-// FIXED TYPE IMPORT: Swapped to the correct upper-snake-case definition from typegen
+import Title from "@/components/Title"; // FIXTER PFAD-ALIAS
+// FIXTER TYP-IMPORT: Durch die korrekte Upper-Snake-Case-Definition aus dem Typegen ersetzt
 import { SINGLE_BLOG_QUERY_RESULT } from "@/sanity.types"; 
 import { urlFor } from "@/sanity/lib/image";
 import {
@@ -23,7 +23,7 @@ const SingleBlogPage = async ({
 }) => {
   const { slug } = await params;
   
-  // FIXED TYPE CASTING: Asserted as the proper matching type definition
+  // FIXTER TYP-UMSCHLUSS: Als passende Typdefinition zugewiesen
   const blog = (await getSingleBlog(slug)) as SINGLE_BLOG_QUERY_RESULT;
   if (!blog || Array.isArray(blog)) return notFound();
 
@@ -34,7 +34,7 @@ const SingleBlogPage = async ({
           {blog?.mainImage && (
             <Image
               src={urlFor(blog?.mainImage).url()}
-              alt={blog.title || "Blog Image"}
+              alt={blog.title || "Blog-Bild"}
               width={800}
               height={800}
               className="w-full max-h-[500px] object-cover rounded-lg"
@@ -49,14 +49,14 @@ const SingleBlogPage = async ({
                       key={index}
                       className="font-semibold text-shop_dark_green tracking-wider"
                     >
-                      {item?.title || "Uncategorized"}
+                      {item?.title || "Nicht kategorisiert"}
                     </p>
                   )
                 )}
                 <span className="absolute left-0 -bottom-1.5 bg-lightColor/30 inline-block w-full h-[2px] group-hover:bg-shop_dark_green hover:cursor-pointer hoverEffect" />
               </div>
               <p className="flex items-center gap-1 text-lightColor relative group hover:cursor-pointer hover:text-shop_dark_green hoverEffect">
-                <Pencil size={15} /> {blog?.author?.name || "Anonymous"}
+                <Pencil size={15} /> {blog?.author?.name || "Anonym"}
                 <span className="absolute left-0 -bottom-1.5 bg-lightColor/30 inline-block w-full h-[2px] group-hover:bg-shop_dark_green hoverEffect" />
               </p>
               <p className="flex items-center gap-1 text-lightColor relative group hover:cursor-pointer hover:text-shop_dark_green hoverEffect">
@@ -175,7 +175,7 @@ const SingleBlogPage = async ({
                     <Link href="/blog" className="flex items-center gap-1">
                       <ChevronLeftIcon className="size-5" />
                       <span className="text-sm font-semibold">
-                        Back to blog
+                        Zurück zum Blog
                       </span>
                     </Link>
                   </div>
@@ -197,21 +197,21 @@ const BlogLeft = async ({ slug }: { slug: string }) => {
   return (
     <div>
       <div className="border border-lightColor p-5 rounded-md">
-        <Title className="text-base">Blog Categories</Title>
+        <Title className="text-base">Blog-Kategorien</Title>
         <div className="space-y-2 mt-2">
           {categories?.map((item, index) => (
             <div
               key={index}
               className="text-lightColor flex items-center justify-between text-sm font-medium"
             >
-              <p>{item?.blogcategories && item.blogcategories[0]?.title ? item.blogcategories[0].title : "General"}</p>
+              <p>{item?.blogcategories && item.blogcategories[0]?.title ? item.blogcategories[0].title : "Allgemein"}</p>
               <p className="text-darkColor font-semibold">{`(1)`}</p>
             </div>
           ))}
         </div>
       </div>
       <div className="border border-lightColor p-5 rounded-md mt-10">
-        <Title className="text-base">Latest Blogs</Title>
+        <Title className="text-base">Neueste Blogs</Title>
         <div className="space-y-4 mt-4">
           {blogs?.map((blog: any, index: number) => (
             <Link
@@ -222,7 +222,7 @@ const BlogLeft = async ({ slug }: { slug: string }) => {
               {blog?.mainImage && (
                 <Image
                   src={urlFor(blog?.mainImage).url()}
-                  alt="blogImage"
+                  alt="BlogBild"
                   width={100}
                   height={100}
                   className="w-16 h-16 rounded-full object-cover border-[1px] border-shop_dark_green/10 group-hover:border-shop_dark_green hoverEffect"

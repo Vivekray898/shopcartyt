@@ -19,13 +19,13 @@ interface Props {
 const ProductGrid = ({ initialTabs, limit }: Props) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isCheckingTabs, setIsCheckingTabs] = useState(true); // New loading state for tab checking
-  const [availableTabs, setAvailableTabs] = useState<string[]>([]); // Start empty instead of initialTabs
+  const [isCheckingTabs, setIsCheckingTabs] = useState(true); // Neuer Ladezustand für die Tab-Prüfung
+  const [availableTabs, setAvailableTabs] = useState<string[]>([]); // Startet leer anstatt mit initialTabs
   
-  // Sets default fallback safely to the first element string ("Featured")
+  // Setzt den Standard-Fallback sicher auf das erste Element der Zeichenkette ("Featured")
   const [selectedTab, setSelectedTab] = useState<string>("");
 
-  // Fetch products for all tabs to determine which have products
+  // Produkte für alle Tabs abrufen, um zu prüfen, welche Tabs Produkte enthalten
   useEffect(() => {
     const fetchAllTabsData = async () => {
       setIsCheckingTabs(true);
@@ -53,13 +53,13 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
             tabsWithProducts.push(tab);
           }
         } catch (error) {
-          console.log(`❌ Error fetching products for tab: ${tab}`, error);
+          console.log(`❌ Fehler beim Abrufen der Produkte für Tab: ${tab}`, error);
         }
       }
       
       setAvailableTabs(tabsWithProducts);
       
-      // Set the first available tab as selected, or empty string if none
+      // Den ersten verfügbaren Tab als ausgewählt festlegen, oder leeren String wenn keiner vorhanden
       if (tabsWithProducts.length > 0) {
         setSelectedTab(tabsWithProducts[0]);
       } else {
@@ -72,7 +72,7 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
     fetchAllTabsData();
   }, [initialTabs, limit]);
 
-  // Fetch products for the selected tab
+  // Produkte für den ausgewählten Tab abrufen
   useEffect(() => {
     if (!selectedTab) return;
 
@@ -97,7 +97,7 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
         });
         setProducts(response);
       } catch (error) {
-        console.log("❌ Product fetching Error", error);
+        console.log("❌ Fehler beim Abrufen der Produkte", error);
       } finally {
         setLoading(false);
       }
@@ -105,27 +105,27 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
     fetchData();
   }, [selectedTab, limit]);
 
-  // Show loading while checking tabs
+  // Ladeanimation anzeigen während die Tabs geprüft werden
   if (isCheckingTabs) {
     return (
       <Container className="flex flex-col lg:px-0 my-10">
         <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-gray-100 rounded-lg w-full mt-10">
           <motion.div className="flex items-center space-x-2 text-slate-900">
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Loading available products...</span>
+            <span>Verfügbare Produkte werden geladen...</span>
           </motion.div>
         </div>
       </Container>
     );
   }
 
-  // If no tabs have products, show a message
+  // Wenn keine Tabs Produkte haben, eine Nachricht anzeigen
   if (availableTabs.length === 0 && !loading) {
     return (
       <Container className="flex flex-col lg:px-0 my-10">
         <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-gray-100 rounded-lg w-full mt-10">
-          <p className="text-lg font-medium text-gray-600">No products available at the moment</p>
-          <p className="text-sm text-gray-500">Please check back later</p>
+          <p className="text-lg font-medium text-gray-600">Derzeit sind keine Produkte verfügbar</p>
+          <p className="text-sm text-gray-500">Bitte schauen Sie später wieder vorbei</p>
         </div>
       </Container>
     );
@@ -133,12 +133,12 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
 
   return (
     <Container className="flex flex-col lg:px-0 my-10">
-      {/* Only show tabbar if there are available tabs */}
+      {/* Tabbar nur anzeigen, wenn verfügbare Tabs vorhanden sind */}
       {availableTabs.length > 0 && (
         <HomeTabbar 
           selectedTab={selectedTab} 
           onTabSelect={setSelectedTab} 
-          tabs={availableTabs} // Pass only tabs that have products
+          tabs={availableTabs} // Nur Tabs übergeben, die Produkte enthalten
         />
       )}
       
@@ -146,7 +146,7 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
         <div className="flex flex-col items-center justify-center py-10 min-h-80 space-y-4 text-center bg-gray-100 rounded-lg w-full mt-10">
           <motion.div className="flex items-center space-x-2 text-slate-900">
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Product is loading...</span>
+            <span>Produkte werden geladen...</span>
           </motion.div>
         </div>
       ) : products?.length ? (
@@ -174,7 +174,7 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
                 href="/shop"
                 className="group inline-flex items-center gap-2 bg-white hover:bg-slate-950 text-slate-900 hover:text-white px-6 py-3 rounded-xl border border-slate-200 hover:border-slate-950 font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-xs hover:shadow-md active:scale-98 cursor-pointer"
               >
-                <span>Explore Entire Showroom</span>
+                <span>Gesamtes Showroom entdecken</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
