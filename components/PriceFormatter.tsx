@@ -6,12 +6,12 @@ interface Props {
 }
 
 const PriceFormatter = ({ amount, className }: Props) => {
-  // 1. Check if the price is missing, null, or explicitly 0
+  // 1. Prüfen, ob der Preis fehlt, null oder explizit 0 ist
   const isZeroOrInvalid = amount === undefined || amount === null || amount === 0;
 
-  // 2. Format using Euro currency guidelines with European-friendly rendering layouts
+  // 2. Formatierung nach Euro-Währungsrichtlinien mit europäisch-freundlichem Rendering-Layout
   const formattedPrice = !isZeroOrInvalid
-    ? new Number(amount).toLocaleString("en-IE", {
+    ? new Number(amount).toLocaleString("de-DE", {
         currency: "EUR",
         style: "currency",
         minimumFractionDigits: 2,
@@ -22,11 +22,11 @@ const PriceFormatter = ({ amount, className }: Props) => {
     <span
       className={twMerge(
         "text-sm font-semibold text-darkColor",
-        isZeroOrInvalid && "text-slate-500 italic font-medium", // Soft styling for showroom fallback text
+        isZeroOrInvalid && "text-slate-500 italic font-medium", // Sanfte Gestaltung für Showroom-Fallback-Text
         className
       )}
     >
-      {isZeroOrInvalid ? "Price on Request" : formattedPrice}
+      {isZeroOrInvalid ? "Preis auf Anfrage" : formattedPrice}
     </span>
   );
 };

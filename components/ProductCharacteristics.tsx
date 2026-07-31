@@ -11,7 +11,7 @@ interface Props {
   variant: string | undefined;
   stock: number | undefined;
   brandName?: string;
-  isCatalogueMode?: boolean; // New operational toggle property
+  isCatalogueMode?: boolean; // Neue operative Umschalt-Eigenschaft
 }
 
 const ProductCharacteristics = ({ productName, variant, stock, brandName, isCatalogueMode = true }: Props) => {
@@ -21,38 +21,38 @@ const ProductCharacteristics = ({ productName, variant, stock, brandName, isCata
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="characteristics" className="border-b-0">
         <AccordionTrigger className="py-2 text-sm font-bold uppercase tracking-wider text-slate-800 hover:no-underline">
-          Characteristics
+          Eigenschaften
         </AccordionTrigger>
         <AccordionContent className="pt-1 pb-3 space-y-2 text-sm text-slate-600">
           
           <p className="flex items-center justify-between border-b border-slate-100 pb-1.5">
-            <span className="font-medium text-slate-500">Shop Outlet:</span>{" "}
+            <span className="font-medium text-slate-500">Shop-Filiale:</span>{" "}
             <span className="font-bold text-slate-900">
-              {brandName || "Main Warehouse"}
+              {brandName || "Hauptlager"}
             </span>
           </p>
 
           <p className="flex items-center justify-between border-b border-slate-100 pb-1.5">
-            <span className="font-medium text-slate-500">Collection:</span>{" "}
+            <span className="font-medium text-slate-500">Kollektion:</span>{" "}
             <span className="font-bold text-slate-900">2026</span>
           </p>
 
           <p className="flex items-center justify-between border-b border-slate-100 pb-1.5">
-            <span className="font-medium text-slate-500">Type:</span>{" "}
+            <span className="font-medium text-slate-500">Typ:</span>{" "}
             <span className="font-bold text-slate-900">
-              {variant || "Standard Item"}
+              {variant || "Standard-Artikel"}
             </span>
           </p>
 
           <p className="flex items-center justify-between">
-            <span className="font-medium text-slate-500">Stock Status:</span>{" "}
-            {/* FIXED: Switches lookups conditionally if the site acts as a product showcase catalog */}
+            <span className="font-medium text-slate-500">Lagerstatus:</span>{" "}
+            {/* FIXED: Wechselt die Abfragen bedingt, wenn die Website als Produktkatalog fungiert */}
             <span className={`font-bold ${isCatalogueMode || isAvailable ? "text-emerald-600" : "text-rose-600"}`}>
               {isCatalogueMode 
-                ? "Available on Order" 
+                ? "Auf Bestellung verfügbar" 
                 : isAvailable 
-                  ? `In Stock (${stock})` 
-                  : "Out of Stock"
+                  ? `Auf Lager (${stock})` 
+                  : "Nicht auf Lager"
               }
             </span>
           </p>
