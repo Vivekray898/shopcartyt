@@ -13,7 +13,12 @@ import {
   SITE_SETTINGS_QUERY,
   HEADER_SETTINGS_QUERY,
   FOOTER_SETTINGS_QUERY,
-  HOME_TAB_BAR_QUERY, // A. Import your new query definition from query.ts
+  HOME_TAB_BAR_QUERY,
+  // Import the new queries
+  RELATED_PRODUCTS_QUERY,
+  PRODUCTS_BY_CATEGORY_QUERY,
+  PRODUCTS_BY_BRAND_QUERY,
+  POPULAR_PRODUCTS_QUERY,
 } from "./query";
 
 const getCategories = async (quantity?: number) => {
@@ -178,11 +183,117 @@ const getHomeTabsData = async (): Promise<string[]> => {
   }
 };
 
+// ============================================
+// 🔥 NEW: RELATED PRODUCTS FUNCTIONS
+// ============================================
+
+// 🔥 NEW: Get Related Products function with priority logic
+const getRelatedProducts = async (
+  excludeId: string,
+  categoryId?: string,
+  brandId?: string,
+  limit: number = 12
+) => {
+  try {
+    let products = [];
+
+    // Priority 1: Products from same category
+    if (categoryId) {
+      products = await client.fetch(PRODUCTS_BY_CATEGORY_QUERY, {
+        excludeId,
+        categoryId,
+        limit,
+      });
+    }
+
+    // Priority 2: If no category products, try same brand
+    if (products.length === 0 && brandId) {
+      products = await client.fetch(PRODUCTS_BY_BRAND_QUERY, {
+        excludeId,
+        brandId,
+        limit,
+      });
+    }
+
+    // Priority 3: If still no products, get popular products as fallback
+    if (products.length === 0) {
+      products = await client.fetch(POPULAR_PRODUCTS_QUERY, {
+        excludeId,
+        limit,
+      });
+    }
+
+    return products ?? [];
+  } catch (error) {
+    console.error("Error fetching related products:", error);
+    return [];
+  }
+};
+
+// Alternative: Get products by category only
+const getProductsByCategory = async (
+  categoryId: string,
+  excludeId: string,
+  limit: number = 12
+) => {
+  try {
+    const products = await client.fetch(PRODUCTS_BY_CATEGORY_QUERY, {
+      excludeId,
+      categoryId,
+      limit,
+    });
+    return products ?? [];
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    return [];
+  }
+};
+
+// Alternative: Get products by brand only
+const getProductsByBrand = async (
+  brandId: string,
+  excludeId: string,
+  limit: number = 12
+) => {
+  try {
+    const products = await client.fetch(PRODUCTS_BY_BRAND_QUERY, {
+      excludeId,
+      brandId,
+      limit,
+    });
+    return products ?? [];
+  } catch (error) {
+    console.error("Error fetching products by brand:", error);
+    return [];
+  }
+};
+
+// Alternative: Get popular products
+const getPopularProducts = async (
+  excludeId: string,
+  limit: number = 12
+) => {
+  try {
+    const products = await client.fetch(POPULAR_PRODUCTS_QUERY, {
+      excludeId,
+      limit,
+    });
+    return products ?? [];
+  } catch (error) {
+    console.error("Error fetching popular products:", error);
+    return [];
+  }
+};
+
+// ============================================
+// EXPORTS
+// ============================================
+
 // C. Export all functions including the new one
 export {
   getCategories,
   getAllBrands,
-  getHomeTabsData, // 👈 Added here
+  getHomeTabsData,
   getLatestBlogs,
   getDealProducts,
   getProductBySlug,
@@ -195,9 +306,13 @@ export {
   getSiteSettings,
   getHeaderSettings,
   getFooterSettings,
-  
+  // 🔥 NEW: Export the new functions
+  getRelatedProducts,
+  getProductsByCategory,
+  getProductsByBrand,
+  getPopularProducts,
   // Exporting raw query string tags safely for other multi-fetch structures
   SITE_SETTINGS_QUERY,
   HEADER_SETTINGS_QUERY,
-  FOOTER_SETTINGS_QUERY
+  FOOTER_SETTINGS_QUERY,
 };

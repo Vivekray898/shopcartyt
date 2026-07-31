@@ -44,16 +44,18 @@ export default async function DynamicNoCodePage({ params }: Props) {
             return (
               <HomeBanner 
                 key={index}
-                banner={{
-                  _id: index.toString(),
-                  headline: block.heading,
-                  // 🚀 FIXED: Changed from 'bannerImage' to use the new type properties 
-                  // desktopImage handles the core asset, and mobileImage falls back gracefully
-                  desktopImage: block.image,
-                  mobileImage: block.image, 
-                  targetUrl: block.ctaLink || "/shop",
-                  buttonText: block.ctaText,
-                }} 
+                banners={[ // ← CHANGED: Use 'banners' as an array
+                  {
+                    _id: index.toString(),
+                    headline: block.heading,
+                    // 🚀 FIXED: Changed from 'bannerImage' to use the new type properties 
+                    // desktopImage handles the core asset, and mobileImage falls back gracefully
+                    desktopImage: block.image,
+                    mobileImage: block.image, 
+                    targetUrl: block.ctaLink || "/shop",
+                    buttonText: block.ctaText,
+                  }
+                ]}
               />
             );
 
