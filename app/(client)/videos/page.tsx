@@ -140,9 +140,9 @@ const VideosPage = async () => {
   return (
     <Container className="py-10">
       <div className="space-y-4 text-slate-900">
-        <Title className="text-3xl font-bold">Latest Showroom Shorts</Title>
+        <Title className="text-3xl font-bold">Neueste Shorts im Showroom</Title>
         <p className="max-w-3xl text-base text-slate-600">
-          Scroll through our quick showroom updates and lightning product demonstrations live. Synced seamlessly.
+          Scrolle durch unsere kurzen Showroom-Updates und blitzschnellen Produktdemonstrationen – live und nahtlos synchronisiert.
         </p>
       </div>
 

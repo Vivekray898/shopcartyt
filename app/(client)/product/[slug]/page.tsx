@@ -61,7 +61,7 @@ const SingleProductPage = async ({
           <p className={`px-4 py-1.5 text-sm text-center inline-block font-semibold rounded-lg ${
             isCatalogueMode || (product?.stock ?? 0) > 0 ? "text-green-600 bg-green-100" : "bg-red-100 text-red-600"
           }`}>
-            {isCatalogueMode ? "Showroom Exhibition" : (product?.stock ?? 0) > 0 ? "In Stock" : "Out of Stock"}
+            {isCatalogueMode ? "Showroom-Ausstellung" : (product?.stock ?? 0) > 0 ? "Auf Lager" : "Nicht auf Lager"}
           </p>
         </div>
 
@@ -82,19 +82,19 @@ const SingleProductPage = async ({
         <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-b-gray-200 py-5 -mt-2">
           <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect cursor-pointer">
             <RxBorderSplit className="text-lg" />
-            <p>Compare color</p>
+            <p>Farbe vergleichen</p>
           </div>
           <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect cursor-pointer">
             <FaRegQuestionCircle className="text-lg" />
-            <p>Ask a question</p>
+            <p>Eine Frage stellen</p>
           </div>
           <div className="flex items-center gap-2 text-sm text-black hover:text-red-600 hoverEffect cursor-pointer">
             <TbTruckDelivery className="text-lg" />
-            <p>Delivery & Return</p>
+            <p>Lieferung & Rückgabe</p>
           </div>
           
           {/* FIXED: Replaced passive layout row item with the working interactive Web Share API hub */}
-          <ProductShareButton productName={product?.name || "Product"} />
+          <ProductShareButton productName={product?.name || "Produkt"} />
         </div>
 
         {/* FIXED: Wrapped shipping detail rows inside inverted checks so they completely hide when catalogue mode is active */}
@@ -104,10 +104,10 @@ const SingleProductPage = async ({
               <Truck size={30} className="text-shop_orange" />
               <div>
                 <p className="text-base font-semibold text-black">
-                  Free Delivery
+                  Kostenlose Lieferung
                 </p>
                 <p className="text-sm text-gray-500 underline underline-offset-2">
-                  Enter your Postal code for Delivery Availability.
+                  Geben Sie Ihre Postleitzahl ein, um die Lieferverfügbarkeit zu prüfen.
                 </p>
               </div>
             </div>
@@ -115,10 +115,10 @@ const SingleProductPage = async ({
               <CornerDownLeft size={30} className="text-shop_orange" />
               <div>
                 <p className="text-base font-semibold text-black">
-                  Return Delivery
+                  Rücklieferung
                 </p>
                 <p className="text-sm text-gray-500 ">
-                  Free 30days Delivery Returns. <span className="underline underline-offset-2">Details</span>
+                  Kostenlose 30-Tage-Rückgabe. <span className="underline underline-offset-2">Details</span>
                 </p>
               </div>
             </div>

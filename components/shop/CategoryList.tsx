@@ -87,7 +87,7 @@ const CategoryList = ({
     <div className="w-full bg-white p-4 rounded-2xl border border-slate-100/80 shadow-xs max-w-full overflow-hidden">
       <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-50">
         <Title className="text-xs font-black uppercase tracking-wider text-slate-400">
-          Categories
+          Kategorien
         </Title>
         {selectedCategory && (
           <button

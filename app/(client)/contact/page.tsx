@@ -63,10 +63,10 @@ const ContactPage = () => {
       id: 1,
       name: "Fundgrube Aßweiler",
       address: "Aßweiler",
-      city: "Aßweiler, Germany",
-      phone: "+4917632853448",
+      city: "Aßweiler, Deutschland",
+      phone: "+49 176 32853448",
       email: "assweiler@fundgrube.com",
-      hours: "Mon-Sat: 9:00 - 20:00",
+      hours: "Mo-Sa: 9:00 - 20:00",
       coordinates: "49.2134, 7.1801",
       mapsUrl: "https://www.google.com/maps?q=Fundgrube+Sonderpostenmarkt+A%C3%9Fweiler",
       embedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2606.322878516748!2d7.1800750767101915!3d49.2134034756573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4795cdce6b678f33%3A0x302e33a329f835f9!2sFundgrube%20Sonderpostenmarkt%2C%20Blumen%2C%20Gartencenter%2C%20A%C3%9Fweiler!5e0!3m2!1sen!2sin!4v1785411348624!5m2!1sen!2sin"
@@ -75,10 +75,10 @@ const ContactPage = () => {
       id: 2,
       name: "Best Preis Blieskastel",
       address: "Blieskastel",
-      city: "Blieskastel, Germany",
-      phone: "+4917632853448",
+      city: "Blieskastel, Deutschland",
+      phone: "+49 176 32853448",
       email: "blieskastel@fundgrube.com",
-      hours: "Mon-Sat: 9:00 - 20:00",
+      hours: "Mo-Sa: 9:00 - 20:00",
       coordinates: "49.2472, 7.3632",
       mapsUrl: "https://www.google.com/maps?q=Best+Preis+Textil+Schreibware+Baumarkt+Blieskastel",
       embedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2604.5416189021976!2d7.363204976711802!3d49.24717927326737!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4795d123d15c4abb%3A0xad008301e167ed7!2sBest%20Preis%20Textil%20Schreibware%20Baumarkt%20Artikel!5e0!3m2!1sen!2sin!4v1785411367261!5m2!1sen!2sin"
@@ -90,31 +90,31 @@ const ContactPage = () => {
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = 'Name ist erforderlich';
     } else if (formData.name.length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+      newErrors.name = 'Name muss mindestens 2 Zeichen lang sein';
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'E-Mail ist erforderlich';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'Bitte geben Sie eine gültige E-Mail-Adresse ein';
     }
 
     if (formData.phone && !/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/.test(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
+      newErrors.phone = 'Bitte geben Sie eine gültige Telefonnummer ein';
     }
 
     if (!formData.subject.trim()) {
-      newErrors.subject = 'Subject is required';
+      newErrors.subject = 'Betreff ist erforderlich';
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
+      newErrors.message = 'Nachricht ist erforderlich';
     } else if (formData.message.length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
+      newErrors.message = 'Nachricht muss mindestens 10 Zeichen lang sein';
     } else if (formData.message.length > 1000) {
-      newErrors.message = 'Message cannot exceed 1000 characters';
+      newErrors.message = 'Nachricht darf 1000 Zeichen nicht überschreiten';
     }
 
     setErrors(newErrors);
@@ -145,12 +145,12 @@ const ContactPage = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit form');
+        throw new Error(data.error || 'Formularübermittlung fehlgeschlagen');
       }
 
       // Success
       setSubmitStatus('success');
-      setSubmitMessage('Thank you for your message! We will get back to you soon.');
+      setSubmitMessage('Vielen Dank für Ihre Nachricht! Wir werden uns in Kürze bei Ihnen melden.');
       
       // Reset form
       setFormData({
@@ -164,7 +164,7 @@ const ContactPage = () => {
     } catch (error) {
       console.error('Form submission error:', error);
       setSubmitStatus('error');
-      setSubmitMessage('Something went wrong. Please try again later.');
+      setSubmitMessage('Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut.');
     } finally {
       setIsSubmitting(false);
     }
@@ -184,25 +184,25 @@ const ContactPage = () => {
   const contactOptions = [
     {
       icon: Phone,
-      title: "Call Us",
-      description: "Mon-Sat from 9am to 8pm",
-      action: "+4917632853448",
+      title: "Rufen Sie uns an",
+      description: "Mo-Sa von 9:00 bis 20:00 Uhr",
+      action: "+49 176 32853448",
       link: "tel:+4917632853448",
       color: "bg-blue-50 border-blue-200 text-blue-600"
     },
     {
       icon: Mail,
-      title: "Email Us",
-      description: "We'll respond within 24h",
-      action: "info@fundgrube.com",
-      link: "mailto:info@fundgrube.com",
+      title: "Schreiben Sie uns",
+      description: "Wir antworten innerhalb von 24 Stunden",
+      action: "",
+      link: "mailto:",
       color: "bg-emerald-50 border-emerald-200 text-emerald-600"
     },
     {
       icon: MapPin,
-      title: "Visit Us",
-      description: "Two convenient locations",
-      action: "Get Directions",
+      title: "Besuchen Sie uns",
+      description: "Zwei praktische Standorte",
+      action: "Route planen",
       link: "#stores",
       color: "bg-purple-50 border-purple-200 text-purple-600"
     }
@@ -224,11 +224,11 @@ const ContactPage = () => {
         <div className="relative container mx-auto px-4 max-w-7xl">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              Get in Touch
+              Kontaktieren Sie uns
             </h1>
             <p className="text-lg md:text-xl opacity-90 max-w-2xl">
-              Have questions about our products or services? We'd love to hear from you. 
-              Reach out through any of the channels below.
+              Haben Sie Fragen zu unseren Produkten oder Dienstleistungen? Wir würden gerne von Ihnen hören.
+              Nehmen Sie über einen der folgenden Kanäle Kontakt mit uns auf.
             </p>
           </div>
         </div>
@@ -267,9 +267,9 @@ const ContactPage = () => {
           <div className="lg:col-span-3">
             <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
               <div className="mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-slate-800">Send us a Message</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-800">Nachricht senden</h2>
                 <p className="text-slate-500 mt-2">
-                  Fill out the form below and we'll get back to you as soon as possible.
+                  Füllen Sie das untenstehende Formular aus und wir melden uns so schnell wie möglich bei Ihnen.
                 </p>
               </div>
 
@@ -294,7 +294,7 @@ const ContactPage = () => {
                   {/* Name */}
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">
-                      Full Name *
+                      Vollständiger Name *
                     </label>
                     <input
                       type="text"
@@ -305,7 +305,7 @@ const ContactPage = () => {
                       className={`w-full px-4 py-3 rounded-xl border ${
                         errors.name ? 'border-red-300 focus:ring-red-500' : 'border-slate-200 focus:border-shop_light_green'
                       } focus:ring-2 focus:ring-shop_light_green/20 focus:outline-none transition-colors bg-slate-50/50`}
-                      placeholder="John Doe"
+                      placeholder="Max Mustermann"
                     />
                     {errors.name && (
                       <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
@@ -318,7 +318,7 @@ const ContactPage = () => {
                   {/* Email */}
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
-                      Email Address *
+                      E-Mail-Adresse *
                     </label>
                     <input
                       type="email"
@@ -329,7 +329,7 @@ const ContactPage = () => {
                       className={`w-full px-4 py-3 rounded-xl border ${
                         errors.email ? 'border-red-300 focus:ring-red-500' : 'border-slate-200 focus:border-shop_light_green'
                       } focus:ring-2 focus:ring-shop_light_green/20 focus:outline-none transition-colors bg-slate-50/50`}
-                      placeholder="john@example.com"
+                      placeholder="max@example.com"
                     />
                     {errors.email && (
                       <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
@@ -343,7 +343,7 @@ const ContactPage = () => {
                 {/* Phone */}
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2">
-                    Phone Number (Optional)
+                    Telefonnummer (Optional)
                   </label>
                   <input
                     type="tel"
@@ -354,7 +354,7 @@ const ContactPage = () => {
                     className={`w-full px-4 py-3 rounded-xl border ${
                       errors.phone ? 'border-red-300 focus:ring-red-500' : 'border-slate-200 focus:border-shop_light_green'
                     } focus:ring-2 focus:ring-shop_light_green/20 focus:outline-none transition-colors bg-slate-50/50`}
-                    placeholder="+4917632853448"
+                    placeholder="+49 176 32853448"
                   />
                   {errors.phone && (
                     <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
@@ -367,7 +367,7 @@ const ContactPage = () => {
                 {/* Subject */}
                 <div>
                   <label htmlFor="subject" className="block text-sm font-medium text-slate-700 mb-2">
-                    Subject *
+                    Betreff *
                   </label>
                   <input
                     type="text"
@@ -378,7 +378,7 @@ const ContactPage = () => {
                     className={`w-full px-4 py-3 rounded-xl border ${
                       errors.subject ? 'border-red-300 focus:ring-red-500' : 'border-slate-200 focus:border-shop_light_green'
                     } focus:ring-2 focus:ring-shop_light_green/20 focus:outline-none transition-colors bg-slate-50/50`}
-                    placeholder="How can we help you?"
+                    placeholder="Wie können wir Ihnen helfen?"
                   />
                   {errors.subject && (
                     <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
@@ -391,7 +391,7 @@ const ContactPage = () => {
                 {/* Message */}
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-2">
-                    Message *
+                    Nachricht *
                   </label>
                   <textarea
                     id="message"
@@ -402,7 +402,7 @@ const ContactPage = () => {
                     className={`w-full px-4 py-3 rounded-xl border ${
                       errors.message ? 'border-red-300 focus:ring-red-500' : 'border-slate-200 focus:border-shop_light_green'
                     } focus:ring-2 focus:ring-shop_light_green/20 focus:outline-none transition-colors bg-slate-50/50 resize-none`}
-                    placeholder="Write your message here..."
+                    placeholder="Schreiben Sie hier Ihre Nachricht..."
                   />
                   {errors.message && (
                     <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
@@ -411,7 +411,7 @@ const ContactPage = () => {
                     </p>
                   )}
                   <p className="mt-2 text-xs text-slate-400">
-                    {formData.message.length}/1000 characters
+                    {formData.message.length}/1000 Zeichen
                   </p>
                 </div>
 
@@ -424,12 +424,12 @@ const ContactPage = () => {
                   {isSubmitting ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Sending...
+                      Wird gesendet...
                     </>
                   ) : (
                     <>
                       <Send className="w-5 h-5" />
-                      Send Message
+                      Nachricht senden
                     </>
                   )}
                 </button>
@@ -445,41 +445,41 @@ const ContactPage = () => {
                 <div className="p-2 rounded-xl bg-shop_light_green/10">
                   <Clock className="w-5 h-5 text-shop_light_green" />
                 </div>
-                <h3 className="font-semibold text-slate-800">Store Hours</h3>
+                <h3 className="font-semibold text-slate-800">Öffnungszeiten</h3>
               </div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-slate-600">Monday - Saturday</span>
+                  <span className="text-slate-600">Montag - Samstag</span>
                   <span className="font-medium text-slate-800">9:00 - 20:00</span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-slate-600">Sunday</span>
-                  <span className="font-medium text-slate-800">Closed</span>
+                  <span className="text-slate-600">Sonntag</span>
+                  <span className="font-medium text-slate-800">Geschlossen</span>
                 </div>
               </div>
             </div>
 
             {/* Quick Response */}
             <div className="bg-gradient-to-br from-shop_light_green/10 to-emerald-50 rounded-2xl p-6 border border-shop_light_green/20">
-              <h4 className="font-semibold text-slate-800 mb-2">Quick Response</h4>
+              <h4 className="font-semibold text-slate-800 mb-2">Schnelle Antwort</h4>
               <p className="text-sm text-slate-600">
-                We typically respond within 24 hours during business days.
+                Wir antworten in der Regel innerhalb von 24 Stunden an Werktagen.
               </p>
               <div className="mt-4 flex gap-2">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/80 rounded-full text-xs font-medium text-slate-700">
                   <CheckCircle className="w-3 h-3 text-emerald-500" />
-                  Fast reply
+                  Schnelle Antwort
                 </span>
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/80 rounded-full text-xs font-medium text-slate-700">
                   <CheckCircle className="w-3 h-3 text-emerald-500" />
-                  Friendly support
+                  Freundlicher Support
                 </span>
               </div>
             </div>
 
             {/* Social Links */}
             <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-100">
-              <h3 className="font-semibold text-slate-800 mb-4">Connect With Us</h3>
+              <h3 className="font-semibold text-slate-800 mb-4">Folgen Sie uns</h3>
               <div className="flex gap-3">
                 {socialLinks.map((social, index) => (
                   <a
@@ -504,10 +504,10 @@ const ContactPage = () => {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              Our Store Locations
+              Unsere Standorte
             </h2>
             <p className="text-slate-500">
-              Visit us at one of our convenient locations. We'd love to serve you in person!
+              Besuchen Sie uns an einem unserer praktischen Standorte. Wir würden uns freuen, Sie persönlich zu bedienen!
             </p>
           </div>
 
@@ -536,7 +536,7 @@ const ContactPage = () => {
                     className="absolute bottom-4 right-4 bg-white/95 hover:bg-white text-slate-800 px-4 py-2 rounded-xl text-sm font-medium shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 border border-slate-200 hover:border-shop_light_green"
                   >
                     <Navigation className="w-4 h-4 text-shop_light_green" />
-                    Get Directions
+                    Route planen
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
@@ -577,34 +577,34 @@ const ContactPage = () => {
       <section className="container mx-auto px-4 max-w-7xl py-16 md:py-20">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-            Frequently Asked Questions
+            Häufig gestellte Fragen
           </h2>
           <p className="text-slate-500">
-            Find quick answers to the most common questions our customers ask.
+            Finden Sie schnelle Antworten auf die häufigsten Fragen unserer Kunden.
           </p>
         </div>
 
         <div className="max-w-4xl mx-auto space-y-4">
           {[
             {
-              q: "What are your store hours?",
-              a: "Our stores are open Monday through Saturday from 9:00 AM to 8:00 PM. We are closed on Sundays."
+              q: "Wie sind Ihre Öffnungszeiten?",
+              a: "Unsere Geschäfte sind Montag bis Samstag von 9:00 bis 20:00 Uhr geöffnet. Sonntags haben wir geschlossen."
             },
             {
-              q: "Do you offer online shopping?",
-              a: "Yes! You can browse our products online and place orders for pickup or delivery. Visit our shop section to get started."
+              q: "Bieten Sie Online-Shopping an?",
+              a: "Ja! Sie können unsere Produkte online durchstöbern und Bestellungen für die Abholung oder Lieferung aufgeben. Besuchen Sie unseren Shop-Bereich, um loszulegen."
             },
             {
-              q: "What payment methods do you accept?",
-              a: "We accept cash, credit/debit cards (Visa, Mastercard, American Express), and mobile payments (Apple Pay, Google Pay)."
+              q: "Welche Zahlungsmethoden akzeptieren Sie?",
+              a: "Wir akzeptieren Bargeld, Kredit-/Debitkarten (Visa, Mastercard, American Express) und mobile Zahlungen (Apple Pay, Google Pay)."
             },
             {
-              q: "Can I return or exchange items?",
-              a: "Yes, we offer a 30-day return policy for most items. Please bring your receipt and the original packaging for a smooth return process."
+              q: "Kann ich Artikel zurückgeben oder umtauschen?",
+              a: "Ja, wir bieten eine 30-tägige Rückgabegarantie für die meisten Artikel. Bitte bringen Sie Ihren Kaufbeleg und die Originalverpackung für einen reibungslosen Rückgabeprozess mit."
             },
             {
-              q: "Do you offer gift cards?",
-              a: "Absolutely! Our gift cards are available in various denominations and can be purchased at any of our store locations."
+              q: "Bieten Sie Geschenkkarten an?",
+              a: "Absolut! Unsere Geschenkkarten sind in verschiedenen Werten erhältlich und können in jedem unserer Geschäfte gekauft werden."
             }
           ].map((faq, index) => (
             <div

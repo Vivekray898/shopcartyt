@@ -6,26 +6,26 @@ import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { BadgeCheck, Layers, FileText, Store } from "lucide-react";
 
-// Catalog & showroom indicators
+// Catalog & showroom indicators // Katalog & Showroom-Indikatoren
 const extraData = [
   {
-    title: "Official Distributor",
-    description: "100% certified authentic brands",
+    title: "Offizieller Vertriebspartner",
+    description: "100 % zertifizierte Originalmarken",
     icon: <BadgeCheck size={40} className="stroke-[1.5]" />,
   },
   {
-    title: "Bespoke Ordering",
-    description: "Custom finishes & specifications",
+    title: "Maßgeschneiderte Bestellung",
+    description: "Individuelle Oberflächen & Spezifikationen",
     icon: <Layers size={40} className="stroke-[1.5]" />,
   },
   {
-    title: "Showroom Viewing",
-    description: "Experience product ranges in person",
+    title: "Showroom-Besichtigung",
+    description: "Produktsortimente persönlich erleben",
     icon: <Store size={40} className="stroke-[1.5]" />,
   },
   {
-    title: "Full Specifications",
-    description: "Detailed technical documentation",
+    title: "Vollständige Spezifikationen",
+    description: "Detaillierte technische Dokumentation",
     icon: <FileText size={40} className="stroke-[1.5]" />,
   },
 ];
@@ -33,23 +33,23 @@ const extraData = [
 const ShopByBrands = async () => {
   const brands = await getAllBrands();
   
-  // 🎯 Handle empty or minimal brands gracefully
+  // 🎯 Handle empty or minimal brands gracefully // Leere oder minimale Markenliste elegant behandeln
   const hasBrands = brands && brands.length > 0;
   const brandCount = hasBrands ? brands.length : 0;
   
   return (
     <div className="mb-10 lg:mb-20 bg-shop_light_bg p-5 lg:p-7 rounded-2xl border border-slate-100">
       <div className="flex items-center gap-5 justify-between mb-10">
-        <Title>Our Store</Title>
+        <Title>Unser Store</Title>
         <Link
           href={"/shop"}
           className="text-sm font-bold tracking-wide text-slate-500 hover:text-shop_btn_dark_green hoverEffect"
         >
-          View all
+          Alle anzeigen
         </Link>
       </div>
       
-      {/* 🔄 FIXED: Brands Grid - Dynamic sizing based on count */}
+      {/* 🔄 FIXED: Brands Grid - Dynamic sizing based on count */} {/* Markenraster – Dynamische Größe basierend auf der Anzahl */}
       {hasBrands ? (
         <>
           <div className={`grid gap-4 ${
@@ -68,7 +68,7 @@ const ShopByBrands = async () => {
                 {brand?.image && (
                   <Image
                     src={urlFor(brand?.image).url()}
-                    alt={(brand as any)?.brandName || (brand as any)?.title || "brandImage"}
+                    alt={(brand as any)?.brandName || (brand as any)?.title || "Markenbild"}
                     width={200}
                     height={120}
                     className="w-4/5 h-4/5 object-contain p-2"
@@ -78,25 +78,25 @@ const ShopByBrands = async () => {
             ))}
           </div>
           
-          {/* 🆕 Brand count indicator for small collections */}
+          {/* 🆕 Brand count indicator for small collections */} {/* Markenanzahl-Anzeige für kleine Sammlungen */}
           {brandCount <= 3 && (
             <div className="text-center mt-6 text-slate-500 text-sm">
               <span className="inline-block bg-white px-4 py-2 rounded-full border border-slate-100">
-                {brandCount} {brandCount === 1 ? 'brand' : 'brands'} available
+                {brandCount} {brandCount === 1 ? 'Marke' : 'Marken'} verfügbar
               </span>
             </div>
           )}
         </>
       ) : (
-        // 🆕 Empty state when no brands
+        // 🆕 Empty state when no brands // Leerzustand wenn keine Marken vorhanden
         <div className="text-center py-12 bg-white rounded-xl border border-dashed border-slate-200">
           <Store size={48} className="mx-auto text-slate-300 mb-3" />
-          <h3 className="text-lg font-semibold text-slate-600">No brands available</h3>
-          <p className="text-slate-400 text-sm mt-1">Check back soon for new arrivals</p>
+          <h3 className="text-lg font-semibold text-slate-600">Keine Marken verfügbar</h3>
+          <p className="text-slate-400 text-sm mt-1">Schauen Sie bald wieder vorbei für Neuheiten</p>
         </div>
       )}
 
-      {/* Showroom Features Matrix Row */}
+      {/* Showroom Features Matrix Row */} {/* Showroom-Funktionen Matrix-Zeile */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16 p-4 rounded-xl bg-white/60 border border-slate-50 py-6">
         {extraData?.map((item, index) => (
           <div

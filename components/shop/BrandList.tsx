@@ -17,7 +17,7 @@ const BrandList = ({ brands, selectedBrand, setSelectedBrand }: Props) => {
     <div className="w-full bg-white p-4 rounded-2xl border border-slate-100 shadow-xs">
       <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-50">
         <Title className="text-xs font-black uppercase tracking-wider text-slate-400">
-          Shops & Outlets
+          Geschäfte & Outlets
         </Title>
         {selectedBrand && (
           <button

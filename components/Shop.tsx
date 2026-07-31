@@ -95,10 +95,10 @@ const Shop = ({
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="space-y-0.5">
               <Title className="text-sm font-bold uppercase tracking-wider text-slate-400">
-                Showroom Inventory
+                Showroom-Bestand
               </Title>
               <h1 className="text-xl font-black text-slate-900 tracking-tight sm:text-2xl">
-                {searchQuery ? `Search Results for "${searchQuery}"` : "Find products that fit your needs"}
+                {searchQuery ? `Search Results for "${searchQuery}"` : "Finden Sie Produkte, die Ihren Bedürfnissen entsprechen."}
               </h1>
             </div>
 
