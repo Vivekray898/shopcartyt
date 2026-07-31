@@ -7,13 +7,12 @@ import ImageView from "@/components/ImageView";
 import PriceView from "@/components/PriceView";
 import ProductCharacteristics from "@/components/ProductCharacteristics";
 import RelatedProducts from "@/components/RelatedProducts";
-import RecentlyViewed from "@/components/RecentlyViewed"; // ← IMPORT
+import RecentlyViewed from "@/components/RecentlyViewed";
 import { getProductBySlug, getSiteSettings, getRelatedProducts } from "@/sanity/queries";
 import { CornerDownLeft, StarIcon, Truck } from "lucide-react";
 import { notFound } from "next/navigation";
 import React from "react";
 import { FaRegQuestionCircle } from "react-icons/fa";
-import { FiShare2 } from "react-icons/fi";
 import { RxBorderSplit } from "react-icons/rx";
 import { TbTruckDelivery } from "react-icons/tb"; 
 import ProductShareButton from "@/components/ProductShareButton";
@@ -40,8 +39,6 @@ const SingleProductPage = async ({
     ? ((product.brand as any)?.title || (product.brand as any)?.brandName)
     : undefined;
 
-  // 🔥 Fetch related products with priority logic
-  // FIXED: Use categories array instead of single category
   const categoryId = product?.categories && product.categories.length > 0 
     ? (product.categories[0] as any)?._id 
     : undefined;
@@ -50,17 +47,14 @@ const SingleProductPage = async ({
   
   let relatedProducts = [];
   
-  // Priority 1: Products from same category
   if (categoryId) {
     relatedProducts = await getRelatedProducts(product._id, categoryId, undefined, 12);
   } 
   
-  // Priority 2: If no category products, try same brand
   if (relatedProducts.length === 0 && brandId) {
     relatedProducts = await getRelatedProducts(product._id, undefined, brandId, 12);
   }
   
-  // Priority 3: If still no products, get popular products as fallback
   if (relatedProducts.length === 0) {
     relatedProducts = await getRelatedProducts(product._id, undefined, undefined, 12);
   }
@@ -71,25 +65,35 @@ const SingleProductPage = async ({
         {product?.images && (
           <ImageView images={product?.images} isStock={product?.stock ?? undefined} />
         )}
-        <div className="w-full md:w-1/2 flex flex-col gap-5">
-          <div className="space-y-1">
-            <h2 className="text-2xl font-bold">{product?.name}</h2>
-            <div className="text-sm text-gray-600 tracking-wide">
-              <div dangerouslySetInnerHTML={{ __html: product?.description || "" }} className="prose-sm custom-html-reset" />
-            </div>
-            <div className="flex items-center gap-0.5 text-xs mt-3">
-              {[...Array(5)].map((_, index) => (
-                <StarIcon key={index} size={12} className="text-shop_light_green" fill={"#3b9c3c"} />
-              ))}
-              <p className="font-semibold">{`(120)`}</p>
+        <div className="w-full md:w-1/2 flex flex-col gap-6">
+          {/* Header & Description Block */}
+          <div>
+            <h1 className="text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 leading-tight">
+              {product?.name}
+            </h1>
+            
+            {product?.description && (
+              <div 
+                dangerouslySetInnerHTML={{ __html: product?.description || "" }} 
+                className="mt-2 text-sm md:text-base text-gray-500 leading-relaxed prose-sm custom-html-reset" 
+              />
+            )}
+            
+            <div className="flex items-center gap-1.5 mt-3">
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, index) => (
+                  <StarIcon key={index} size={14} className="text-shop_light_green" fill={"#3b9c3c"} />
+                ))}
+              </div>
+              <span className="text-xs font-medium text-gray-500">(120)</span>
             </div>
           </div>
           
-          <div className="space-y-2 border-t border-b border-gray-200 py-5">
-            <PriceView price={product?.price ?? undefined} discount={product?.discount ?? undefined} className="text-lg font-bold" />
+          <div className="space-y-3 border-t border-b border-gray-200 py-5">
+            <PriceView price={product?.price ?? undefined} discount={product?.discount ?? undefined} className="text-xl font-bold" />
             
-            <p className={`px-4 py-1.5 text-sm text-center inline-block font-semibold rounded-lg ${
-              isCatalogueMode || (product?.stock ?? 0) > 0 ? "text-green-600 bg-green-100" : "bg-red-100 text-red-600"
+            <p className={`px-3.5 py-1 text-xs sm:text-sm inline-block font-semibold rounded-md ${
+              isCatalogueMode || (product?.stock ?? 0) > 0 ? "text-green-700 bg-green-50 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"
             }`}>
               {isCatalogueMode ? "Showroom-Ausstellung" : (product?.stock ?? 0) > 0 ? "Auf Lager" : "Nicht auf Lager"}
             </p>
@@ -155,7 +159,7 @@ const SingleProductPage = async ({
         </div>
       </Container>
 
-      {/* 🔥 Related Products Section */}
+      {/* Related Products Section */}
       {relatedProducts.length > 0 && (
         <Container>
           <RelatedProducts 
@@ -165,11 +169,11 @@ const SingleProductPage = async ({
         </Container>
       )}
 
-      {/* 🔥 Recently Viewed Products Section */}
+      {/* Recently Viewed Products Section */}
       <Container>
         <RecentlyViewed 
           currentProductId={product._id}
-          currentProduct={product} // ← PASS THE FULL PRODUCT
+          currentProduct={product}
           maxItems={10}
         />
       </Container>
