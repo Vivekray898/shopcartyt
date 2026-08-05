@@ -19,9 +19,11 @@ const Footer = () => {
   
   const isCurrentlyLoading = !footerSettings;
   
-  const quickLinks = footerSettings?.quickLinks ?? [];
-  const categories = footerSettings?.categories ?? [];
+  // Get section data with defaults
+  const quickLinksSection = footerSettings?.quickLinksSection ?? { title: "Quick Links", links: [] };
+  const categoriesSection = footerSettings?.categoriesSection ?? { title: "Categories", links: [] };
   const storeLocations = footerSettings?.storeLocations ?? [];
+  const legalLinks = footerSettings?.legalLinks ?? [];
   
   const newsletterText = footerSettings?.newsletterText || "Subscribe to our newsletter for exclusive updates.";
   const socialLinks = footerSettings?.socialLinks;
@@ -35,7 +37,6 @@ const Footer = () => {
   return (
     <footer className="bg-white border-t relative">
       <Container>
-        {/* Passing down active synchronization state controls */}
         <FooterTop 
           contactItems={contactItems} 
           storeLocations={storeLocations}
@@ -60,7 +61,7 @@ const Footer = () => {
             
             {tagline && <SubText>{tagline}</SubText>}
             
-            {!isCurrentlyLoading && (
+            {!isCurrentlyLoading && socialLinks && socialLinks.length > 0 && (
               <SocialMedia
                 links={socialLinks}
                 className="text-darkColor/60 pt-2"
@@ -70,43 +71,43 @@ const Footer = () => {
             )}
           </div>
           
-          <div>
-            <SubTitle>Quick Links</SubTitle>
-            <ul className="space-y-3 mt-4">
-              {quickLinks?.map((item) => (
-                <li key={item?.title}>
-                  <Link
-                    href={item?.href ?? "#"}
-                    className="hover:text-shop_light_green hoverEffect font-medium text-sm"
-                  >
-                    {item?.title}
-                  </Link>
-                </li>
-              ))}
-              {!isCurrentlyLoading && quickLinks.length === 0 && (
-                <span className="text-xs text-slate-400 italic">No links configured</span>
-              )}
-            </ul>
-          </div>
+          {/* Quick Links Section with Editable Header */}
+          {quickLinksSection?.links && quickLinksSection.links.length > 0 && (
+            <div>
+              <SubTitle>{quickLinksSection.title || "Quick Links"}</SubTitle>
+              <ul className="space-y-3 mt-4">
+                {quickLinksSection.links.map((item) => (
+                  <li key={item?.title}>
+                    <Link
+                      href={item?.href ?? "#"}
+                      className="hover:text-shop_light_green hoverEffect font-medium text-sm"
+                    >
+                      {item?.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           
-          <div>
-            <SubTitle>Categories</SubTitle>
-            <ul className="space-y-3 mt-4">
-              {categories?.map((item) => (
-                <li key={item?.title}>
-                  <Link
-                    href={item?.href ?? "#"}
-                    className="hover:text-shop_light_green hoverEffect font-medium text-sm"
-                  >
-                    {item?.title}
-                  </Link>
-                </li>
-              ))}
-              {!isCurrentlyLoading && categories.length === 0 && (
-                <span className="text-xs text-slate-400 italic">No categories configured</span>
-              )}
-            </ul>
-          </div>
+          {/* Categories Section with Editable Header */}
+          {categoriesSection?.links && categoriesSection.links.length > 0 && (
+            <div>
+              <SubTitle>{categoriesSection.title || "Categories"}</SubTitle>
+              <ul className="space-y-3 mt-4">
+                {categoriesSection.links.map((item) => (
+                  <li key={item?.title}>
+                    <Link
+                      href={item?.href ?? "#"}
+                      className="hover:text-shop_light_green hoverEffect font-medium text-sm"
+                    >
+                      {item?.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           
           <div className="space-y-4">
             <SubTitle>Newsletter</SubTitle>
@@ -120,8 +121,44 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="py-6 border-t text-center text-sm text-slate-500">
-          <div>{footerBottomText}</div>
+        {/* LEGAL & COPYRIGHT SECTION */}
+        <div className="py-4 border-t">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            {/* Legal Links */}
+            {legalLinks && legalLinks.length > 0 && (
+              <div className="flex flex-wrap items-center justify-center gap-4 text-sm">
+                {legalLinks.map((link, index) => (
+                  <React.Fragment key={link?.title || index}>
+                    {link?.openInNewTab ? (
+                      <a
+                        href={link?.href ?? "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-slate-500 hover:text-shop_light_green hoverEffect transition-colors duration-200"
+                      >
+                        {link?.title}
+                      </a>
+                    ) : (
+                      <Link
+                        href={link?.href ?? "#"}
+                        className="text-slate-500 hover:text-shop_light_green hoverEffect transition-colors duration-200"
+                      >
+                        {link?.title}
+                      </Link>
+                    )}
+                    {index < legalLinks.length - 1 && (
+                      <span className="text-slate-300 select-none">•</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+            )}
+            
+            {/* Copyright Text */}
+            <div className="text-center text-sm text-slate-500">
+              {footerBottomText}
+            </div>
+          </div>
         </div>
       </Container>
 

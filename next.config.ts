@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  distDir: isDev ? "/tmp/shopcartyt-next" : ".next",
   images: {
     remotePatterns: [
       {
@@ -10,8 +12,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // FIXED: Removed the deprecated 'eslint' block to fix the TS2353 validation error.
-  // Next.js v16 handles builds through Turbopack natively now.
   typescript: {
     ignoreBuildErrors: true,
   },

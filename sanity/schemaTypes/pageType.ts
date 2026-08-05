@@ -1,3 +1,5 @@
+// sanity/schemaTypes/pageType.ts
+
 import { defineField, defineType } from "sanity";
 import { DocumentIcon } from "@sanity/icons";
 
@@ -18,7 +20,10 @@ export const pageType = defineType({
       title: "URL Slug / Path",
       type: "slug",
       description: "e.g., 'about-us' or 'summer-clearance'. Do not include slashes.",
-      options: { source: "title", maxLength: 96 },
+      options: { 
+        source: "title", 
+        maxLength: 96 
+      },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -30,7 +35,27 @@ export const pageType = defineType({
         { type: "heroBlock" },
         { type: "productGridBlock" },
         { type: "textContentBlock" },
+        { type: "serviceDetailBlock" },
+        { type: "blogPostsBlock" },
+        { type: "categoryGridBlock" },
+        { type: "brandShowcaseBlock" },
+        { type: "ctaBlock" },
+        { type: "accordionBlock" },
+        { type: "galleryBlock" },
       ],
     }),
   ],
+  // Optional: Add preview configuration
+  preview: {
+    select: {
+      title: "title",
+      subtitle: "slug.current",
+    },
+    prepare({ title, subtitle }) {
+      return {
+        title: title || "Untitled Page",
+        subtitle: subtitle ? `/${subtitle}` : "No slug set",
+      };
+    },
+  },
 });

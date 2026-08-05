@@ -34,19 +34,30 @@ const FOOTER_SETTINGS_QUERY = `*[_type == 'footerSettings'][0]{
     mapsUrl,
     featured
   },
-  quickLinks[]{
+  quickLinksSection{
     title,
-    href
+    links[]{
+      title,
+      href
+    }
   },
-  categories[]{
+  categoriesSection{
     title,
-    href
+    links[]{
+      title,
+      href
+    }
   },
   socialLinks[]{
     platform,
     url
   },
-  newsletterText
+  newsletterText,
+  legalLinks[]{
+    title,
+    href,
+    openInNewTab
+  }
 }`;
 
 // ============ TYPES ============
@@ -83,6 +94,12 @@ export type FooterSocialLink = {
   url?: string;
 };
 
+export type FooterLegalLink = {
+  title?: string;
+  href?: string;
+  openInNewTab?: boolean;
+};
+
 export type StoreLocation = {
   name?: string;
   address?: string;
@@ -95,16 +112,22 @@ export type StoreLocation = {
   featured?: boolean;
 };
 
+export type FooterSection = {
+  title?: string;
+  links?: FooterLink[];
+};
+
 export type FooterSettings = {
   logo?: unknown;
   tagline?: string;
   footerBottomText?: string;
   contactItems?: FooterContactItem[];
   storeLocations?: StoreLocation[];
-  quickLinks?: FooterLink[];
-  categories?: FooterLink[];
+  quickLinksSection?: FooterSection;
+  categoriesSection?: FooterSection;
   socialLinks?: FooterSocialLink[];
   newsletterText?: string;
+  legalLinks?: FooterLegalLink[];
 };
 
 export type SiteSettingsState = {
@@ -126,66 +149,18 @@ export const defaultHeaderSettings: HeaderSettings = {
   callToAction: { label: "Contact us", href: "/contact" },
 };
 
+// Minimal defaults - will be replaced by Sanity data
 export const defaultFooterSettings: FooterSettings = {
   logo: undefined,
-  tagline: "Discover curated furniture collections at Shopcartyt, blending style and comfort to elevate your living spaces.",
-  footerBottomText: `© ${new Date().getFullYear()} Shopcartyt. All rights reserved.`,
-  contactItems: [
-    { title: "Visit Us", subtitle: "New Orleans, USA", icon: "map-pin" },
-    { title: "Call Us", subtitle: "+12 958 648 597", icon: "phone" },
-    { title: "Working Hours", subtitle: "Mon - Sat: 10:00 AM - 7:00 PM", icon: "clock" },
-    { title: "Email Us", subtitle: "Shopcart@gmail.com", icon: "mail" },
-  ],
-  storeLocations: [
-    {
-      name: "Fundgrube Aßweiler",
-      address: "Blumen, Gartencenter",
-      city: "Aßweiler, Germany",
-      phone: "+4917632853448",
-      email: "assweiler@fundgrube.com",
-      hours: "Mon-Sat: 9:00 - 20:00",
-      embedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2606.322878516748!2d7.1800750767101915!3d49.2134034756573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4795cdce6b678f33%3A0x302e33a329f835f9!2sFundgrube%20Sonderpostenmarkt%2C%20Blumen%2C%20Gartencenter%2C%20A%C3%9Fweiler!5e0!3m2!1sen!2sin!4v1785411348624!5m2!1sen!2sin",
-      mapsUrl: "https://www.google.com/maps?q=Fundgrube+Sonderpostenmarkt+A%C3%9Fweiler",
-      featured: true,
-    },
-    {
-      name: "Best Preis Blieskastel",
-      address: "Textil, Schreibware, Baumarkt",
-      city: "Blieskastel, Germany",
-      phone: "+4917632853448",
-      email: "blieskastel@fundgrube.com",
-      hours: "Mon-Sat: 9:00 - 20:00",
-      embedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2604.5416189021976!2d7.363204976711802!3d49.24717927326737!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4795d123d15c4abb%3A0xad008301e167ed7!2sBest%20Preis%20Textil%20Schreibware%20Baumarkt%20Artikel!5e0!3m2!1sen!2sin!4v1785411367261!5m2!1sen!2sin",
-      mapsUrl: "https://www.google.com/maps?q=Best+Preis+Textil+Schreibware+Baumarkt+Blieskastel",
-      featured: true,
-    },
-  ],
-  quickLinks: [
-    { title: "About us", href: "/about" },
-    { title: "Contact us", href: "/contact" },
-    { title: "Terms & Conditions", href: "/terms" },
-    { title: "Privacy Policy", href: "/privacy" },
-    { title: "FAQs", href: "/faqs" },
-    { title: "Help", href: "/help" },
-  ],
-  categories: [
-    { title: "Mobiles", href: "/category/mobiles" },
-    { title: "Appliances", href: "/category/appliances" },
-    { title: "Smartphones", href: "/category/smartphones" },
-    { title: "Air Conditioners", href: "/category/air-conditioners" },
-    { title: "Washing Machine", href: "/category/washing-machine" },
-    { title: "Kitchen Appliances", href: "/category/kitchen-appliances" },
-    { title: "Gadget Accessories", href: "/category/gadget-accessories" },
-  ],
-  socialLinks: [
-    { platform: "Youtube", url: "https://www.youtube.com/@reactjsBD" },
-    { platform: "Github", url: "https://www.youtube.com/@reactjsBD" },
-    { platform: "Linkedin", url: "https://www.youtube.com/@reactjsBD" },
-    { platform: "Facebook", url: "https://www.youtube.com/@reactjsBD" },
-    { platform: "Slack", url: "https://www.youtube.com/@reactjsBD" },
-  ],
-  newsletterText:
-    "Subscribe to our newsletter to receive updates and exclusive offers.",
+  tagline: "",
+  footerBottomText: `© ${new Date().getFullYear()} Fundgrube-Bestpreis. All rights reserved.`,
+  contactItems: [],
+  storeLocations: [],
+  quickLinksSection: { title: "Quick Links", links: [] },
+  categoriesSection: { title: "Categories", links: [] },
+  socialLinks: [],
+  newsletterText: "Subscribe to our newsletter for exclusive updates.",
+  legalLinks: [],
 };
 
 // ============ CACHE ============
