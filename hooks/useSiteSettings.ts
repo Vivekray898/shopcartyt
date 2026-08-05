@@ -1,6 +1,8 @@
 // hooks/useSiteSettings.ts
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { client } from "@/sanity/lib/client";
+
+// ============ QUERIES ============
 
 const HEADER_SETTINGS_QUERY = `*[_type == 'headerSettings'][0]{
   logo,
@@ -149,7 +151,6 @@ export const defaultHeaderSettings: HeaderSettings = {
   callToAction: { label: "Contact us", href: "/contact" },
 };
 
-// Minimal defaults - will be replaced by Sanity data
 export const defaultFooterSettings: FooterSettings = {
   logo: undefined,
   tagline: "",
@@ -165,38 +166,59 @@ export const defaultFooterSettings: FooterSettings = {
 
 // ============ CACHE ============
 
-let cachedSiteSettings: Omit<SiteSettingsState, 'isLoading' | 'error'> | null = null;
+interface CachedSettings {
+  headerSettings: HeaderSettings;
+  footerSettings: FooterSettings;
+  timestamp: number;
+}
+
+let cachedSiteSettings: CachedSettings | null = null;
 let siteSettingsPromise: Promise<Omit<SiteSettingsState, 'isLoading' | 'error'>> | null = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
 
 async function fetchSiteSettings(): Promise<Omit<SiteSettingsState, 'isLoading' | 'error'>> {
+  // Check if cached data is still valid
   if (cachedSiteSettings) {
-    return cachedSiteSettings;
+    const isCacheValid = Date.now() - cachedSiteSettings.timestamp < CACHE_DURATION;
+    if (isCacheValid) {
+      const { timestamp, ...settings } = cachedSiteSettings;
+      return settings;
+    }
   }
 
-  if (!siteSettingsPromise) {
-    siteSettingsPromise = Promise.all([
-      client.fetch(HEADER_SETTINGS_QUERY),
-      client.fetch(FOOTER_SETTINGS_QUERY),
-    ])
-      .then(([headerSettings, footerSettings]) => {
-        const result = {
-          headerSettings: headerSettings ?? defaultHeaderSettings,
-          footerSettings: footerSettings ?? defaultFooterSettings,
-        };
-        cachedSiteSettings = result;
-        return result;
-      })
-      .catch((error) => {
-        console.error("Error fetching site settings:", error);
-        return {
-          headerSettings: defaultHeaderSettings,
-          footerSettings: defaultFooterSettings,
-        };
-      })
-      .finally(() => {
-        siteSettingsPromise = null;
-      });
+  // Return existing promise if one is in progress
+  if (siteSettingsPromise) {
+    return siteSettingsPromise;
   }
+
+  // Create new fetch promise
+  siteSettingsPromise = Promise.all([
+    client.fetch(HEADER_SETTINGS_QUERY).catch((err) => {
+      console.warn("Error fetching header settings:", err);
+      return null;
+    }),
+    client.fetch(FOOTER_SETTINGS_QUERY).catch((err) => {
+      console.warn("Error fetching footer settings:", err);
+      return null;
+    }),
+  ])
+    .then(([headerSettings, footerSettings]) => {
+      const result = {
+        headerSettings: headerSettings ?? defaultHeaderSettings,
+        footerSettings: footerSettings ?? defaultFooterSettings,
+      };
+      
+      // Cache the result with timestamp
+      cachedSiteSettings = {
+        ...result,
+        timestamp: Date.now(),
+      };
+      
+      return result;
+    })
+    .finally(() => {
+      siteSettingsPromise = null;
+    });
 
   return siteSettingsPromise;
 }
@@ -215,22 +237,28 @@ export function useSiteSettings(): SiteSettingsState & {
     isLoading: true,
     error: null,
   });
+  
+  const fetchAttempted = useRef(false);
+  const isMounted = useRef(true);
 
   useEffect(() => {
-    let isMounted = true;
+    // Prevent multiple fetches
+    if (fetchAttempted.current) return;
+    fetchAttempted.current = true;
 
-    fetchSiteSettings()
-      .then((result) => {
-        if (isMounted) {
+    const loadSettings = async () => {
+      try {
+        const result = await fetchSiteSettings();
+        if (isMounted.current) {
           setState({
             ...result,
             isLoading: false,
             error: null,
           });
         }
-      })
-      .catch((error) => {
-        if (isMounted) {
+      } catch (error) {
+        console.error("Failed to fetch site settings:", error);
+        if (isMounted.current) {
           setState({
             headerSettings: defaultHeaderSettings,
             footerSettings: defaultFooterSettings,
@@ -238,10 +266,13 @@ export function useSiteSettings(): SiteSettingsState & {
             error: error instanceof Error ? error : new Error('Failed to fetch settings'),
           });
         }
-      });
+      }
+    };
+
+    loadSettings();
 
     return () => {
-      isMounted = false;
+      isMounted.current = false;
     };
   }, []);
 
@@ -304,4 +335,37 @@ export function getPrimaryLocation(footerSettings: FooterSettings): StoreLocatio
   }
   const featured = getFeaturedLocations(footerSettings);
   return featured.length > 0 ? featured[0] : footerSettings.storeLocations[0];
+}
+
+// ============ REFRESH FUNCTION ============
+
+export function refreshSiteSettings(): void {
+  cachedSiteSettings = null;
+  siteSettingsPromise = null;
+}
+
+// ============ UTILITY HOOK FOR MANUAL REFRESH ============
+
+export function useRefreshSiteSettings() {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const refresh = async (): Promise<void> => {
+    setIsRefreshing(true);
+    setError(null);
+    
+    try {
+      // Clear cache
+      refreshSiteSettings();
+      // Trigger new fetch
+      await fetchSiteSettings();
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Failed to refresh settings'));
+      throw err;
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  return { refresh, isRefreshing, error };
 }
