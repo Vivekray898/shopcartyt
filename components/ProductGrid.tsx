@@ -10,6 +10,7 @@ import Container from "./Container";
 import HomeTabbar from "./HomeTabbar";
 import { Product } from "@/sanity.types";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Props {
   initialTabs: string[]; 
@@ -17,15 +18,32 @@ interface Props {
 }
 
 const ProductGrid = ({ initialTabs, limit }: Props) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isCheckingTabs, setIsCheckingTabs] = useState(true); // Neuer Ladezustand für die Tab-Prüfung
-  const [availableTabs, setAvailableTabs] = useState<string[]>([]); // Startet leer anstatt mit initialTabs
-  
-  // Setzt den Standard-Fallback sicher auf das erste Element der Zeichenkette ("Featured")
+  const [isCheckingTabs, setIsCheckingTabs] = useState(true);
+  const [availableTabs, setAvailableTabs] = useState<string[]>([]);
   const [selectedTab, setSelectedTab] = useState<string>("");
 
-  // Produkte für alle Tabs abrufen, um zu prüfen, welche Tabs Produkte enthalten
+  // Read tab from URL on mount
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && initialTabs.includes(tabParam)) {
+      setSelectedTab(tabParam);
+    }
+  }, [searchParams, initialTabs]);
+
+  // Update URL when tab changes
+  const handleTabSelect = (tab: string) => {
+    setSelectedTab(tab);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', tab);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
+
+  // Fetch all tabs data
   useEffect(() => {
     const fetchAllTabsData = async () => {
       setIsCheckingTabs(true);
@@ -59,9 +77,16 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
       
       setAvailableTabs(tabsWithProducts);
       
-      // Den ersten verfügbaren Tab als ausgewählt festlegen, oder leeren String wenn keiner vorhanden
+      // Only set selected tab if not already set from URL
       if (tabsWithProducts.length > 0) {
-        setSelectedTab(tabsWithProducts[0]);
+        const urlTab = searchParams.get('tab');
+        if (!urlTab || !tabsWithProducts.includes(urlTab)) {
+          setSelectedTab(tabsWithProducts[0]);
+          // Update URL with default tab
+          const params = new URLSearchParams(searchParams.toString());
+          params.set('tab', tabsWithProducts[0]);
+          router.replace(`?${params.toString()}`, { scroll: false });
+        }
       } else {
         setSelectedTab("");
       }
@@ -70,9 +95,9 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
     };
 
     fetchAllTabsData();
-  }, [initialTabs, limit]);
+  }, [initialTabs, limit, searchParams, router]);
 
-  // Produkte für den ausgewählten Tab abrufen
+  // Fetch products for selected tab
   useEffect(() => {
     if (!selectedTab) return;
 
@@ -105,7 +130,6 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
     fetchData();
   }, [selectedTab, limit]);
 
-  // Ladeanimation anzeigen während die Tabs geprüft werden
   if (isCheckingTabs) {
     return (
       <Container className="flex flex-col lg:px-0 my-10">
@@ -119,7 +143,6 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
     );
   }
 
-  // Wenn keine Tabs Produkte haben, eine Nachricht anzeigen
   if (availableTabs.length === 0 && !loading) {
     return (
       <Container className="flex flex-col lg:px-0 my-10">
@@ -133,12 +156,11 @@ const ProductGrid = ({ initialTabs, limit }: Props) => {
 
   return (
     <Container className="flex flex-col lg:px-0 my-10">
-      {/* Tabbar nur anzeigen, wenn verfügbare Tabs vorhanden sind */}
       {availableTabs.length > 0 && (
         <HomeTabbar 
           selectedTab={selectedTab} 
-          onTabSelect={setSelectedTab} 
-          tabs={availableTabs} // Nur Tabs übergeben, die Produkte enthalten
+          onTabSelect={handleTabSelect} 
+          tabs={availableTabs}
         />
       )}
       
