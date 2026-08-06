@@ -12,7 +12,10 @@ interface ContactOption {
 const FloatingWhatsApp = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Contact options for both brands
+  // Shared WhatsApp number for both brands
+  const whatsappNumber = "4917632853448"; // +49 176 32853448
+
+  // Contact options for both brands with individual phone numbers
   const contactOptions: ContactOption[] = [
     {
       label: "Fundgrube",
@@ -34,9 +37,9 @@ const FloatingWhatsApp = () => {
     setIsExpanded(!isExpanded);
   };
 
-  // Get WhatsApp URL for a specific number
-  const getWhatsAppUrl = (phoneNumber: string) => {
-    return `https://wa.me/${phoneNumber}?text=${defaultMessage}`;
+  // Get WhatsApp URL (same number for both)
+  const getWhatsAppUrl = () => {
+    return `https://wa.me/${whatsappNumber}?text=${defaultMessage}`;
   };
 
   // Get call URL for a specific number
@@ -82,9 +85,9 @@ const FloatingWhatsApp = () => {
                   <span className="sr-only">Call {option.label}</span>
                 </a>
 
-                {/* WhatsApp Button */}
+                {/* WhatsApp Button - Same number for both */}
                 <a
-                  href={getWhatsAppUrl(option.phoneNumber)}
+                  href={getWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Chat with ${option.label} on WhatsApp`}
