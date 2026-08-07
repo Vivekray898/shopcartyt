@@ -1,19 +1,19 @@
 # Astro Project Map
 
-Generated: 8/5/2026, 6:23:56 PM
+Generated: 8/7/2026, 10:45:26 PM
 
 ## Statistics
 
 - **Folders:** 0
 - **Files:** 0
-- **Size:** 6.19 MB
+- **Size:** 8.42 MB
 
 ---
 
 ## Folder Structure
 
 ```
-shopcartyt
+fun
 ├── actions
 │   └── createCheckoutSession.ts
 ├── app
@@ -36,6 +36,7 @@ shopcartyt
 │   │   │   └── [slug]
 │   │   │       └── page.tsx
 │   │   ├── contact
+│   │   │   ├── ContactClient.tsx
 │   │   │   └── page.tsx
 │   │   ├── deal
 │   │   │   └── page.tsx
@@ -61,11 +62,22 @@ shopcartyt
 │   ├── studio
 │   │   └── [[...tool]]
 │   │       └── page.tsx
+│   ├── apple-icon.png
 │   ├── favicon.ico
 │   ├── globals.css
+│   ├── icon0.svg
+│   ├── icon1.png
 │   ├── layout.tsx
-│   └── not-found.tsx
+│   ├── manifest.json
+│   ├── not-found.tsx
+│   ├── robots.ts
+│   └── sitemap.ts
 ├── components
+│   ├── builder
+│   │   ├── AccordionSection.tsx
+│   │   ├── CTASection.tsx
+│   │   ├── GallerySection.tsx
+│   │   └── ServiceDetail.tsx
 │   ├── shop
 │   │   ├── BrandList.tsx
 │   │   ├── CategoryList.tsx
@@ -139,22 +151,28 @@ shopcartyt
 │   └── data.ts
 ├── hooks
 │   ├── index.ts
+│   ├── useDebounce.ts
 │   ├── useShopMode.tsx
 │   └── useSiteSettings.ts
-├── images
-│   ├── banner
-│   │   └── banner_1.png
-│   ├── brands
-│   │   └── brand_1.webp
-│   ├── products
-│   │   └── product_23.png
-│   ├── emptyCart.png
-│   ├── index.ts
-│   ├── payment.png
-│   └── paypalLogo.png
 ├── lib
+│   ├── metadata.ts
 │   ├── stripe.ts
 │   └── utils.ts
+├── public
+│   ├── images
+│   │   ├── banner
+│   │   │   └── banner_1.png
+│   │   ├── brands
+│   │   │   └── brand_1.webp
+│   │   ├── products
+│   │   │   └── product_23.png
+│   │   ├── emptyCart.png
+│   │   ├── index.ts
+│   │   ├── payment.png
+│   │   └── paypalLogo.png
+│   └── social
+│       ├── web-app-manifest-192x192.png
+│       └── web-app-manifest-512x512.png
 ├── sanity
 │   ├── lib
 │   │   ├── backendClient.ts
@@ -173,6 +191,7 @@ shopcartyt
 │   │   ├── blogType.ts
 │   │   ├── brandTypes.ts
 │   │   ├── categoryType.ts
+│   │   ├── contactPageType.ts
 │   │   ├── contactSubmission.ts
 │   │   ├── footerSettingsType.ts
 │   │   ├── headerSettingsType.ts
@@ -194,12 +213,14 @@ shopcartyt
 ├── next-env.d.ts
 ├── next.config.ts
 ├── package.json
+├── pnpm-workspace.yaml
 ├── postcss.config.mjs
 ├── README.md
 ├── sanity.cli.ts
 ├── sanity.config.ts
 ├── seed.tar.gz
 ├── store.ts
-└── tsconfig.json
+├── tsconfig.json
+└── tsconfig.tsbuildinfo
 
 ```

@@ -1,14 +1,12 @@
-// app/layout.tsx
-import type { Metadata } from "next";
+// app/(client)/layout.tsx
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ShopModeProvider } from "@/hooks/useShopMode";
 import { getSiteSettings } from "@/sanity/queries";
-import AutoTranslator from "@/components/AutoTranslator"; 
+import AutoTranslator from "@/components/AutoTranslator";
 
-// Remove the metadata export from layout
-// The title will be set by individual pages
+// NO metadata export here - it inherits from root layout
 
 export default async function RootLayout({
   children,
@@ -26,7 +24,6 @@ export default async function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
-        
         <AutoTranslator />
       </ShopModeProvider>
     </ClerkProvider>
