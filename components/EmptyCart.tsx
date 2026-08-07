@@ -1,10 +1,10 @@
 "use client";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
-// FIXED: Replaced "framer-motion" with your runtime active "motion/react" module
-import { motion } from "motion/react"; 
-import { emptyCart } from "@/public/images/emptyCart.png;
+import { motion } from "motion/react";
 import Image from "next/image";
+// ✅ Fix: Use the correct import path without quotes issues
+import emptyCart from "@/public/images/emptyCart.png";
 
 export default function EmptyCart() {
   return (
