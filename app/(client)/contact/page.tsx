@@ -1,7 +1,7 @@
 // app/contact/ContactClient.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Mail,
   Phone,
@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
-import type { Metadata } from "next";
+
 // Types
 type ContactData = {
   heroTitle: string;
@@ -107,27 +107,40 @@ export default function ContactClient({ data }: ContactClientProps) {
   );
   const [submitMessage, setSubmitMessage] = useState("");
 
-  // Safe access with fallbacks
+  // Debug: Log data when component mounts
+  useEffect(() => {
+    console.log("ContactClient received data:", data);
+  }, [data]);
+
+  // Safe access with fallbacks - ensure all fields exist
   const safeData = {
     heroTitle: data?.heroTitle || "Kontaktieren Sie uns",
     heroSubtitle: data?.heroSubtitle || "",
     heroImage: data?.heroImage || null,
-    contactOptions: data?.contactOptions || [],
+    contactOptions: Array.isArray(data?.contactOptions) ? data.contactOptions : [],
     formTitle: data?.formTitle || "Nachricht senden",
     formSubtitle: data?.formSubtitle || "",
     formSuccessMessage: data?.formSuccessMessage || "Vielen Dank für Ihre Nachricht!",
     formErrorMessage: data?.formErrorMessage || "Etwas ist schiefgelaufen.",
     sidebarTitle: data?.sidebarTitle || "Informationen",
-    openingHours: data?.openingHours || [],
+    openingHours: Array.isArray(data?.openingHours) ? data.openingHours : [],
     quickResponseText: data?.quickResponseText || "",
     socialTitle: data?.socialTitle || "Folgen Sie uns",
     locationsTitle: data?.locationsTitle || "Unsere Standorte",
     locationsSubtitle: data?.locationsSubtitle || "",
-    locations: data?.locations || [],
+    locations: Array.isArray(data?.locations) ? data.locations : [],
     faqTitle: data?.faqTitle || "Häufig gestellte Fragen",
     faqSubtitle: data?.faqSubtitle || "",
-    faqs: data?.faqs || [],
+    faqs: Array.isArray(data?.faqs) ? data.faqs : [],
   };
+
+  // Log safe data
+  useEffect(() => {
+    console.log("Safe data after processing:", safeData);
+  }, []);
+
+  // ... rest of your existing code (validateForm, handleSubmit, handleChange, etc.)
+  // Keep all your existing functions and JSX the same
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
