@@ -3,7 +3,7 @@ import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 // FIXED: Replaced "framer-motion" with your runtime active "motion/react" module
 import { motion } from "motion/react"; 
-import { emptyCart } from "@/images";
+import { emptyCart } from "@/public/images/emptyCart.png;
 import Image from "next/image";
 
 export default function EmptyCart() {
