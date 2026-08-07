@@ -107,6 +107,28 @@ export default function ContactClient({ data }: ContactClientProps) {
   );
   const [submitMessage, setSubmitMessage] = useState("");
 
+  // Safe access with fallbacks
+  const safeData = {
+    heroTitle: data?.heroTitle || "Kontaktieren Sie uns",
+    heroSubtitle: data?.heroSubtitle || "",
+    heroImage: data?.heroImage || null,
+    contactOptions: data?.contactOptions || [],
+    formTitle: data?.formTitle || "Nachricht senden",
+    formSubtitle: data?.formSubtitle || "",
+    formSuccessMessage: data?.formSuccessMessage || "Vielen Dank für Ihre Nachricht!",
+    formErrorMessage: data?.formErrorMessage || "Etwas ist schiefgelaufen.",
+    sidebarTitle: data?.sidebarTitle || "Informationen",
+    openingHours: data?.openingHours || [],
+    quickResponseText: data?.quickResponseText || "",
+    socialTitle: data?.socialTitle || "Folgen Sie uns",
+    locationsTitle: data?.locationsTitle || "Unsere Standorte",
+    locationsSubtitle: data?.locationsSubtitle || "",
+    locations: data?.locations || [],
+    faqTitle: data?.faqTitle || "Häufig gestellte Fragen",
+    faqSubtitle: data?.faqSubtitle || "",
+    faqs: data?.faqs || [],
+  };
+
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
@@ -168,7 +190,7 @@ export default function ContactClient({ data }: ContactClientProps) {
       }
 
       setSubmitStatus("success");
-      setSubmitMessage(data.formSuccessMessage);
+      setSubmitMessage(safeData.formSuccessMessage);
 
       setFormData({
         name: "",
@@ -180,7 +202,7 @@ export default function ContactClient({ data }: ContactClientProps) {
     } catch (error) {
       console.error("Form submission error:", error);
       setSubmitStatus("error");
-      setSubmitMessage(data.formErrorMessage);
+      setSubmitMessage(safeData.formErrorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -207,11 +229,11 @@ export default function ContactClient({ data }: ContactClientProps) {
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-shop_light_green to-emerald-600 text-white py-16 md:py-24">
-        {data.heroImage && (
+        {safeData.heroImage && (
           <div className="absolute inset-0">
             <Image
-              src={urlFor(data.heroImage).url()}
-              alt={data.heroTitle}
+              src={urlFor(safeData.heroImage).url()}
+              alt={safeData.heroTitle}
               fill
               className="object-cover opacity-20"
             />
@@ -221,10 +243,10 @@ export default function ContactClient({ data }: ContactClientProps) {
         <div className="relative container mx-auto px-4 max-w-7xl">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              {data.heroTitle}
+              {safeData.heroTitle}
             </h1>
             <p className="text-lg md:text-xl opacity-90 max-w-2xl">
-              {data.heroSubtitle}
+              {safeData.heroSubtitle}
             </p>
           </div>
         </div>
@@ -233,7 +255,7 @@ export default function ContactClient({ data }: ContactClientProps) {
       {/* Contact Options Cards */}
       <section className="container mx-auto px-4 max-w-7xl -mt-8 relative z-10">
         <div className="grid md:grid-cols-3 gap-6">
-          {data.contactOptions.map((option, index) => {
+          {safeData.contactOptions.map((option, index) => {
             const Icon = iconMap[option.icon as keyof typeof iconMap] || Phone;
             const colorClass =
               colorMap[option.color as keyof typeof colorMap] || colorMap.blue;
@@ -274,9 +296,9 @@ export default function ContactClient({ data }: ContactClientProps) {
             <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-100">
               <div className="mb-8">
                 <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
-                  {data.formTitle}
+                  {safeData.formTitle}
                 </h2>
-                <p className="text-slate-500 mt-2">{data.formSubtitle}</p>
+                <p className="text-slate-500 mt-2">{safeData.formSubtitle}</p>
               </div>
 
               {/* Success/Error Message */}
@@ -472,15 +494,15 @@ export default function ContactClient({ data }: ContactClientProps) {
                   <Clock className="w-5 h-5 text-shop_light_green" />
                 </div>
                 <h3 className="font-semibold text-slate-800">
-                  {data.sidebarTitle}
+                  {safeData.sidebarTitle}
                 </h3>
               </div>
               <div className="space-y-2 text-sm">
-                {data.openingHours.map((item, index) => (
+                {safeData.openingHours.map((item, index) => (
                   <div
                     key={index}
                     className={`flex justify-between py-2 ${
-                      index < data.openingHours.length - 1
+                      index < safeData.openingHours.length - 1
                         ? "border-b border-slate-100"
                         : ""
                     }`}
@@ -498,7 +520,7 @@ export default function ContactClient({ data }: ContactClientProps) {
               <h4 className="font-semibold text-slate-800 mb-2">
                 Schnelle Antwort
               </h4>
-              <p className="text-sm text-slate-600">{data.quickResponseText}</p>
+              <p className="text-sm text-slate-600">{safeData.quickResponseText}</p>
               <div className="mt-4 flex gap-2">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/80 rounded-full text-xs font-medium text-slate-700">
                   <CheckCircle className="w-3 h-3 text-emerald-500" />
@@ -513,7 +535,7 @@ export default function ContactClient({ data }: ContactClientProps) {
 
             <div className="bg-white rounded-2xl shadow-xl p-6 border border-slate-100">
               <h3 className="font-semibold text-slate-800 mb-4">
-                {data.socialTitle}
+                {safeData.socialTitle}
               </h3>
               <div className="flex gap-3">
                 {socialLinks.map((social, index) => (
@@ -542,13 +564,13 @@ export default function ContactClient({ data }: ContactClientProps) {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-              {data.locationsTitle}
+              {safeData.locationsTitle}
             </h2>
-            <p className="text-slate-500">{data.locationsSubtitle}</p>
+            <p className="text-slate-500">{safeData.locationsSubtitle}</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {data.locations.map((location) => (
+            {safeData.locations.map((location) => (
               <div
                 key={location.name}
                 className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-slate-100 group"
@@ -619,13 +641,13 @@ export default function ContactClient({ data }: ContactClientProps) {
       <section className="container mx-auto px-4 max-w-7xl py-16 md:py-20">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">
-            {data.faqTitle}
+            {safeData.faqTitle}
           </h2>
-          <p className="text-slate-500">{data.faqSubtitle}</p>
+          <p className="text-slate-500">{safeData.faqSubtitle}</p>
         </div>
 
         <div className="max-w-4xl mx-auto space-y-4">
-          {data.faqs.map((faq, index) => (
+          {safeData.faqs.map((faq, index) => (
             <div
               key={index}
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 border border-slate-100"
