@@ -8,7 +8,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://fundgrube-bestprei
 const SITE_NAME = 'FundGrube BestPreis';
 const SITE_TITLE = 'FundGrube BestPreis – Markenprodukte günstig kaufen | Offizieller Vertriebspartner';
 const DEFAULT_DESCRIPTION = 'FundGrube BestPreis - Ihr zuverlässiger Partner für zertifizierte Originalmarken. Maßgeschneiderte Bestellungen & Showroom-Besichtigung in Blieskastel und Zweibrücken.';
-const OG_IMAGE = '/social/og-image.jpg';
+const OG_IMAGE = '/social/og-image.png';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
