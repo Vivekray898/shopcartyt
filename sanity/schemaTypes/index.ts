@@ -33,6 +33,7 @@ import {
   accordionBlock,
   galleryBlock
 } from "./pageBlocks";
+import { contactPageType } from "./contactPageType";
 
 // Export as array (preferred for newer Sanity versions)
 export const schemaTypes = [
@@ -72,6 +73,7 @@ export const schemaTypes = [
 
   // Utility & Forms
   blockContentType,
+  contactPageType,
   contactSubmission,
 ];
 
