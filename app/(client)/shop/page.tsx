@@ -1,6 +1,13 @@
 import Shop from "@/components/Shop";
 import { getAllBrands, getCategories } from "@/sanity/queries";
 import React from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Shop – FundGrube BestPreis | Angebote, Neuigkeiten & Spartipps",
+  description:
+    "Entdecken Sie aktuelle Angebote, Neuigkeiten, Produktempfehlungen und praktische Spartipps von FundGrube BestPreis.",
+};
 
 interface PageProps {
   searchParams: Promise<{

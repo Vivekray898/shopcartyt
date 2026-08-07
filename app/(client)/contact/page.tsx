@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
-
+import type { Metadata } from "next";
 // Types
 type ContactData = {
   heroTitle: string;

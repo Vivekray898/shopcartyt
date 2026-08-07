@@ -1,5 +1,12 @@
 import Container from "@/components/Container";
 import Title from "@/components/Title";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Videos – FundGrube BestPreis | Angebote, Neuigkeiten & Spartipps",
+  description:
+    "Entdecken Sie aktuelle Angebote, Neuigkeiten, Produktempfehlungen und praktische Spartipps von FundGrube BestPreis.",
+};
 
 interface VideoItem {
   id: string;

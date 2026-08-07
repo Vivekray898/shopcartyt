@@ -15,6 +15,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Blog – FundGrube BestPreis | Angebote, Neuigkeiten & Spartipps",
+  description:
+    "Entdecken Sie aktuelle Angebote, Neuigkeiten, Produktempfehlungen und praktische Spartipps von FundGrube BestPreis.",
+};
 
 const SingleBlogPage = async ({
   params,

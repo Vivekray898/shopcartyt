@@ -7,6 +7,14 @@ import { Calendar } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import type { Metadata } from "next";
+
+
+export const metadata: Metadata = {
+  title: "Blog – FundGrube BestPreis | Angebote, Neuigkeiten & Spartipps",
+  description:
+    "Entdecken Sie aktuelle Angebote, Neuigkeiten, Produktempfehlungen und praktische Spartipps von FundGrube BestPreis.",
+};
 
 const BlogPage = async () => {
   const blogs = await getAllBlogs(6);

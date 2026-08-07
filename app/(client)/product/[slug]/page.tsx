@@ -16,6 +16,13 @@ import { FaRegQuestionCircle } from "react-icons/fa";
 import { RxBorderSplit } from "react-icons/rx";
 import { TbTruckDelivery } from "react-icons/tb"; 
 import ProductShareButton from "@/components/ProductShareButton";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Product – FundGrube BestPreis | Angebote, Neuigkeiten & Spartipps",
+  description:
+    "Entdecken Sie aktuelle Angebote, Neuigkeiten, Produktempfehlungen und praktische Spartipps von FundGrube BestPreis.",
+};
 
 const SingleProductPage = async ({
   params,

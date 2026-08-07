@@ -3,6 +3,13 @@ import WishListProducts from "@/components/WishListProducts";
 import { currentUser } from "@clerk/nextjs/server";
 import { client } from "@/sanity/lib/client"; // Adjust this import path to match your sanity client location
 import React from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Wishlist – FundGrube BestPreis | Angebote, Neuigkeiten & Spartipps",
+  description:
+    "Entdecken Sie aktuelle Angebote, Neuigkeiten, Produktempfehlungen und praktische Spartipps von FundGrube BestPreis.",
+};
 
 const WishListPage = async () => {
   const user = await currentUser();

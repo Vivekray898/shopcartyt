@@ -6,7 +6,14 @@ import ProductGrid from "@/components/ProductGrid";
 import ShopByBrands from "@/components/ShopByBrands";
 import { getCategories, getHomeTabsData } from "@/sanity/queries"; 
 import { client } from "@/sanity/lib/client";
+import type { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "FundGrube BestPreis",
+  description:
+    "FundGrube BestPreis – Ihr günstiger Einkaufspartner für Haushaltswaren, Lebensmittel, Getränke, Drogerieartikel und vieles mehr.",
+};
 
 const Home = async () => {
   const categories = await getCategories(6);

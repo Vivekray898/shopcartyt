@@ -1,19 +1,14 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ShopModeProvider } from "@/hooks/useShopMode";
 import { getSiteSettings } from "@/sanity/queries";
-// IMPORT YOUR NEW AUTO TRANSLATOR COMPONENT
 import AutoTranslator from "@/components/AutoTranslator"; 
 
-export const metadata: Metadata = {
-  title: {
-    template: "%s - FundGrube online store",
-    default: "FundGrube online store",
-  },
-  description: "FundGrube online store, Your one stop shop for all your needs",
-};
+// Remove the metadata export from layout
+// The title will be set by individual pages
 
 export default async function RootLayout({
   children,
@@ -32,7 +27,6 @@ export default async function RootLayout({
           <Footer />
         </div>
         
-        {/* 🚀 RUNS AUTO-TRANSLATION CHECKS FOR EVERY VISITOR ENTIRELY FOR FREE */}
         <AutoTranslator />
       </ShopModeProvider>
     </ClerkProvider>

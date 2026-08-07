@@ -3,6 +3,13 @@ import ProductCard from "@/components/ProductCard";
 import Title from "@/components/Title";
 import { getDealProducts } from "@/sanity/queries";
 import React from "react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Deals – FundGrube BestPreis | Angebote, Neuigkeiten & Spartipps",
+  description:
+    "Entdecken Sie aktuelle Angebote, Neuigkeiten, Produktempfehlungen und praktische Spartipps von FundGrube BestPreis.",
+};
 
 const DealPage = async () => {
   const products = await getDealProducts();
